@@ -1,0 +1,1772 @@
+{
+  "name": "Wholesale Lead Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Application form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Business Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Contact Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone"
+            },
+            {
+              "fieldLabel": "Business Type",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Retail Store"
+                  },
+                  {
+                    "option": "Salon/Spa"
+                  },
+                  {
+                    "option": "Spa-hotel"
+                  },
+                  {
+                    "option": "Online retailer"
+                  },
+                  {
+                    "option": "Distributor"
+                  },
+                  {
+                    "option": "Other"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Website or Social Media",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Country",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "USA"
+                  },
+                  {
+                    "option": "Canada"
+                  },
+                  {
+                    "option": "Others"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "City/State",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Estimated First Order",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under $500"
+                  },
+                  {
+                    "option": "$500-$1500"
+                  },
+                  {
+                    "option": "$1500-$5000"
+                  },
+                  {
+                    "option": "$5000+"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Resale Certificate",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  },
+                  {
+                    "option": "Not Applicable"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Sells on Amazon or Marketplaces?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "How did you hear about Acme?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Facebook"
+                  },
+                  {
+                    "option": "LinkedIn"
+                  },
+                  {
+                    "option": "TikTok"
+                  },
+                  {
+                    "option": "Instagram"
+                  },
+                  {
+                    "option": "Others"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Notes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        16,
+        400
+      ],
+      "id": "ed9dd690-da35-493f-b7ff-06e9abe586dc",
+      "name": "Form"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ca1488b8-b4c2-4f13-8da7-0ea779c3f48f",
+              "name": "Business Name",
+              "value": "={{ $json['Business Name'].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "e6cc4cdc-83bf-4cf7-a580-15f76db60bc9",
+              "name": "Contact Name",
+              "value": "={{ $json['Contact Name'].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "86099c91-f2b6-4c39-ba15-c4e2303f083e",
+              "name": "Email",
+              "value": "={{ $json['Email'].trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "507d7d29-8f64-484e-b595-2a827d2ec3f8",
+              "name": "Phone",
+              "value": "={{ ($json['Phone'] || '').replace(/\\D/g, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "af0f6162-4cf8-4212-ad43-263fa019b451",
+              "name": "Business Type",
+              "value": "={{ $json['Business Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f9335a15-6527-46b4-a90f-2e1db59a0066",
+              "name": "Website or Social Media",
+              "value": "={{ $json['Website or Social Media'].trim().toLowerCase().replace(/^https?:\\/\\//, '').replace(/^www\\./, '').replace(/\\/+$/, '') }}",
+              "type": "string"
+            },
+            {
+              "id": "937504d0-34fd-4539-96ed-6affe96312a1",
+              "name": "Country",
+              "value": "={{ $json.Country }}",
+              "type": "string"
+            },
+            {
+              "id": "b44ba06a-c41f-44f5-a2d7-6c85e073c4ed",
+              "name": "City/State",
+              "value": "={{ $json['City/State'] }}",
+              "type": "string"
+            },
+            {
+              "id": "65470f8b-18ad-4ee6-b1da-392999694412",
+              "name": "Estimated First Order",
+              "value": "={{ $json['Estimated First Order'] }}",
+              "type": "string"
+            },
+            {
+              "id": "603d00cc-c44f-4148-a936-c910698e7b03",
+              "name": "Resale Certificate",
+              "value": "={{ $json['Resale Certificate'] }}",
+              "type": "string"
+            },
+            {
+              "id": "57da3bb9-62c7-4465-909c-8979c8fc9057",
+              "name": "Sells on Amazon or Marketplaces?",
+              "value": "={{ $json['Sells on Amazon or Marketplaces?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "153ffa97-6a83-49b5-9356-e368370cd895",
+              "name": "How did you hear about Acme?",
+              "value": "={{ $json['How did you hear about Acme?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fbecbb34-0455-4d26-bdf1-bcff66bb95c4",
+              "name": "Notes",
+              "value": "={{ $json.Notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        400
+      ],
+      "id": "2e17c60e-ca35-4b66-b8cf-4ca6ddacae6a",
+      "name": "Cleaning"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4ea2ac21-c322-4055-811f-bb95d35f8ac5",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "5255a501-6053-4736-a428-8a7f4d1cf798",
+              "leftValue": "={{ $json['Website or Social Media'] }}",
+              "rightValue": "^@[\\w.]{2,30}$|\\.[a-z]{2,}",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "144afc1b-dc9e-47bc-b356-60a03aa70147",
+              "leftValue": "={{ $json.Phone }}",
+              "rightValue": "^$|^\\+?\\d{7,15}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            },
+            {
+              "id": "a6effa09-b0e9-4a05-bb42-15767283a782",
+              "leftValue": "={{ $json['Business Type'] }}",
+              "rightValue": "^(test|Test|TEST|asdf)$",
+              "operator": {
+                "type": "string",
+                "operation": "notRegex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        400
+      ],
+      "id": "18b925a0-548e-4b21-842e-6019819d2eaa",
+      "name": "Validation"
+    },
+    {
+      "parameters": {
+        "sendTo": "you@example.com",
+        "subject": "Lead Review ",
+        "message": "=This  Email:{{ $('Cleaning').item.json.Email }} and Contact Name: {{ $('Cleaning').item.json['Contact Name'] }} needs review. Please check it ASAP",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        560
+      ],
+      "id": "d5540953-2547-45ac-88f1-2c0373081355",
+      "name": "Notify Sales Team"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Acme CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1968417122,
+          "mode": "list",
+          "cachedResultName": "Valid Leads"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        592,
+        272
+      ],
+      "id": "97751b71-8224-4078-bab6-49df920d2e43",
+      "name": "Dupe look up",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ad8bbab-7361-4fe9-8063-ff68e880c8a5",
+              "name": "tier",
+              "value": "REVIEW",
+              "type": "string"
+            },
+            {
+              "id": "679cee52-cc2d-4f47-acf2-56ce43751f6e",
+              "name": "track",
+              "value": "manual_review",
+              "type": "string"
+            },
+            {
+              "id": "b4226da5-2b1e-48c0-9539-00b341cf2ffd",
+              "name": "reason_code",
+              "value": "R1_NEEDS_REVIEW",
+              "type": "string"
+            },
+            {
+              "id": "1cb983e5-d64c-4adf-a716-888446e24837",
+              "name": "email_subject",
+              "value": "We received your Acme application",
+              "type": "string"
+            },
+            {
+              "id": "81309a0b-f35c-4a7c-93e4-6547fe6d0614",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThanks for applying to carry Acme. A member of our team is reviewing your application and will be in touch within 2 business days.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -544
+      ],
+      "id": "ae7f3efa-b08e-44bb-9c20-72d29226d792",
+      "name": "Set Review"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d722353c-fd0e-450c-9372-8aefd65dc89d",
+              "name": "tier",
+              "value": "C",
+              "type": "string"
+            },
+            {
+              "id": "6c5fbd47-00da-4115-a03f-385b7a92b7f3",
+              "name": "track",
+              "value": "pro_artist",
+              "type": "string"
+            },
+            {
+              "id": "a0ddcf61-8132-449b-b620-bec8e600233b",
+              "name": "reason_code",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "81d5b8ff-84ba-4ffc-999a-b1162cfadccc",
+              "name": "email_subject",
+              "value": "Acme Pro Artists program",
+              "type": "string"
+            },
+            {
+              "id": "faf495a2-7d72-4ffb-ade7-83142c941833",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThanks for reaching out. Since you're a working makeup artist, our Pro Artists program is a better fit than wholesale. It's designed for kit use.\n\n[OWNER] from our Pro team will send you the details within 2 business days.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -400
+      ],
+      "id": "b7b85db9-a98a-4605-817c-ba51a4e204dc",
+      "name": "Set C"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94434595-96fa-4834-bfd1-1e708896c6a6",
+              "name": "tier",
+              "value": "D",
+              "type": "string"
+            },
+            {
+              "id": "600ecb72-7e3d-4943-9558-b91e87874197",
+              "name": "track",
+              "value": "declined",
+              "type": "string"
+            },
+            {
+              "id": "3cce1c68-9b7e-4ed2-b28d-2c86d0e7e21c",
+              "name": "reason_code",
+              "value": "D1_OUTSIDE_REGION",
+              "type": "string"
+            },
+            {
+              "id": "a1fc93df-6c58-4fbd-b21b-d1566bc124fd",
+              "name": "email_subject",
+              "value": "Your Acme wholesale application",
+              "type": "string"
+            },
+            {
+              "id": "345f93c8-0645-4e20-bfe2-f9d8c8616d38",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThank you for applying to carry Acme. We aren't able to open a wholesale account right now.\n\nRight now we only open wholesale accounts in the USA and Canada.\n\nWe appreciate you thinking of us, and you're welcome to apply again if anything changes.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -272
+      ],
+      "id": "a5ae6709-e7fb-4636-84e1-6536c2e7124c",
+      "name": "Set D1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb14d1b0-e9fc-4189-b55a-9ec76db7bf73",
+              "name": "tier",
+              "value": "D",
+              "type": "string"
+            },
+            {
+              "id": "abf2abc9-0914-41cb-b18e-252d90408616",
+              "name": "track",
+              "value": "declined",
+              "type": "string"
+            },
+            {
+              "id": "b9a5b4f7-1e0b-4239-818e-e72a8802b459",
+              "name": "reason_code",
+              "value": "D2_MARKETPLACE_SELLER",
+              "type": "string"
+            },
+            {
+              "id": "f54b8775-19a0-4972-80e9-f6eda3069b1e",
+              "name": "email_subject",
+              "value": "Your Acme wholesale application",
+              "type": "string"
+            },
+            {
+              "id": "743568dc-0df0-4fff-9bd9-33c975c86431",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThank you for applying to carry Acme. We aren't able to open a wholesale account right now.\n\nTo protect our authorized retail partners, we don't open wholesale accounts for Amazon or other marketplace sellers.\n\nWe appreciate you thinking of us, and you're welcome to apply again if anything changes.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -144
+      ],
+      "id": "c33b1ded-0bed-4d56-b551-cb67bcf44920",
+      "name": "Set D2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da383852-3cb1-4c66-9264-13d869196890",
+              "name": "tier",
+              "value": "D",
+              "type": "string"
+            },
+            {
+              "id": "11ad733f-d385-420e-967f-d72411946a98",
+              "name": "track",
+              "value": "declined",
+              "type": "string"
+            },
+            {
+              "id": "a467f5e5-d2dc-4197-852c-216e8c339e83",
+              "name": "reason_code",
+              "value": "D3_NO_RESALE_CERT",
+              "type": "string"
+            },
+            {
+              "id": "148251ef-441a-4008-b539-27c29fded530",
+              "name": "email_subject",
+              "value": "Your Acme wholesale application",
+              "type": "string"
+            },
+            {
+              "id": "89366faa-2735-4295-9f88-71ce00d4efbf",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThank you for applying to carry Acme. We aren't able to open a wholesale account right now.\n\nUS wholesale accounts need a valid resale certificate. Once you have one, submit the form again with the same email and we'll review it right away.\n\nWe appreciate you thinking of us, and you're welcome to apply again if anything changes.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        -16
+      ],
+      "id": "17de1ef8-3531-4325-94c3-24819feb00f8",
+      "name": "Set D3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31c7adc9-db86-4abb-b35f-3700d531cc14",
+              "name": "tier",
+              "value": "A",
+              "type": "string"
+            },
+            {
+              "id": "5d8526f8-6b8f-46e7-ad3d-e31fdbc51ecc",
+              "name": "track",
+              "value": "retail_stockist",
+              "type": "string"
+            },
+            {
+              "id": "7cb1dd26-126e-4c35-a1d7-396ebd3849c5",
+              "name": "reason_code",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "24834fa3-c651-4204-87b9-0aa7188609b2",
+              "name": "email_subject",
+              "value": "Your Acme wholesale application",
+              "type": "string"
+            },
+            {
+              "id": "fe96d852-0dc8-43de-8a55-23d4b7589d30",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThanks for applying to carry Acme. {{ $json['Business Name'] }} looks like a great fit for our retail stockist program.\n\n[OWNER] will be your contact and will reach out within 2 business days with our line sheet, wholesale pricing and first-order details. If you have questions before then, just reply to this email.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        128
+      ],
+      "id": "90ed39e5-0bbd-44a5-b7f2-a1badd5c7de9",
+      "name": "Set A"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6ae77727-5f08-461d-aed7-784f4b2b0bfd",
+              "name": "tier",
+              "value": "B",
+              "type": "string"
+            },
+            {
+              "id": "bfcdf832-8a3c-4cec-8e94-083b88ab1c4b",
+              "name": "track",
+              "value": "salon_spa",
+              "type": "string"
+            },
+            {
+              "id": "b5acca78-5672-4d10-8820-245e729cc3f2",
+              "name": "reason_code",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "60990ac0-0f8b-4003-91a3-d32e226c84b8",
+              "name": "email_subject",
+              "value": "=Acme for {{ $json['Business Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3b0a623d-3f98-4285-adfa-bfc28b4ec678",
+              "name": "email_body",
+              "value": "=Hi {{ $json['Contact Name'].split(' ')[0] }},\n\nThanks for your interest in bringing Acme into {{ $json['Business Name'] }}. You're a fit for our salon and spa program, built for smaller opening orders and back-bar or retail shelf use.\n\n[OWNER] will follow up within 2 business days with pricing and a starter order option.\n\nThe Acme Team",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        256
+      ],
+      "id": "2fd316c9-d6fd-4db7-856a-5c930e0a3d2f",
+      "name": "Set B"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ASSIGN OWNER\n// Picks who handles this lead and writes the internal email.\n\n// ---------- SETTINGS (change names and emails here) ----------\nconst TEAM = {\n  founder: { name: 'Founder', email: 'founder@example.com' },\n  pro:     { name: 'Pro Artist Team', email: 'pro@example.com' },\n  ops:     { name: 'Operations', email: 'ops@example.com' },\n  reps: [\n    { name: 'Wholesale Rep 1', email: 'rep1@example.com' },\n    { name: 'Wholesale Rep 2', email: 'rep2@example.com' },\n  ],\n};\nconst TEAM_INBOX = 'team@example.com';   // CC'd on every internal email\nconst RESPONSE_MINUTES = 60;\n// --------------------------------------------------------------\n\nconst lead = $json;\nconst rows = $('Dupe look up').all().map(i => i.json).filter(r => r.lead_id);\nconst count = rep => rows.filter(r => r.owner_email === rep.email).length;\n\n// Who owns it:\n// C -> Pro team, Review -> Operations, D -> nobody.\n// A/B -> founder for distributors and $5000+ orders,\n//        otherwise keep their old rep, or give it to the rep with the fewest leads.\nlet owner = null;\nif (lead.tier === 'C') owner = TEAM.pro;\nelse if (lead.tier === 'REVIEW') owner = TEAM.ops;\nelse if (lead.tier === 'A' || lead.tier === 'B') {\n  if (lead['Business Type'] === 'Distributor' || lead['Estimated First Order'] === '$5000+') owner = TEAM.founder;\n  else owner = TEAM.reps.find(r => r.email === lead.prev_owner_email)\n    || TEAM.reps.reduce((least, rep) => (count(rep) < count(least) ? rep : least));\n}\n\nconst changed = lead.is_update && lead.prev_tier && lead.prev_tier !== lead.tier;\nconst STATUS = { A: 'Awaiting first contact', B: 'Awaiting first contact', C: 'Sent to Pro team', D: 'Declined', REVIEW: 'Needs review' };\nconst urgent = ['A', 'B', 'C'].includes(lead.tier);\n\nconst ownerBody = [\n  urgent ? `Please reach out within ${RESPONSE_MINUTES} minutes.` : 'Please review this lead.',\n  changed ? `Status changed from ${lead.prev_tier} to ${lead.tier}.` : null,\n  '',\n  `Lead ID: ${lead.lead_id}${lead.is_update ? ' (returning lead)' : ''}`,\n  `Tier: ${lead.tier} (${lead.track})`,\n  `Business: ${lead['Business Name']} | ${lead['Business Type']}`,\n  `Contact: ${lead['Contact Name']} | ${lead['Email']} | ${lead['Phone'] || 'no phone'}`,\n  `Location: ${lead['City/State']}, ${lead['Country']}`,\n  `First order: ${lead['Estimated First Order']} | Resale certificate: ${lead['Resale Certificate']}`,\n  `Website or social: ${lead['Website or Social Media']}`,\n  lead['Notes'] ? `Applicant notes: ${lead['Notes']}` : null,\n].filter(v => v !== null).join('\\n');\n\nreturn { json: {\n  ...lead,\n  submitted_at: lead.first_submitted_at,\n  updated_at: new Date().toISOString(),\n  owner_name: owner ? owner.name : '',\n  owner_email: owner ? owner.email : '',\n  status: STATUS[lead.tier],\n  contact_due_by: urgent ? new Date(Date.now() + RESPONSE_MINUTES * 60000).toISOString() : '',\n  email_subject: changed && ['A', 'B'].includes(lead.tier) ? 'Good news about your Acme application' : lead.email_subject,\n  email_body: (lead.email_body || '').replace('[OWNER]', owner ? owner.name : 'Our team'),\n  notify_owner: lead.tier !== 'D',\n  team_inbox: TEAM_INBOX,\n  owner_subject: `[${lead.tier}] ${lead['Business Name']} - ${lead.lead_id}${changed ? ' (status changed)' : ''}`,\n  owner_body: ownerBody,\n}};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        -144
+      ],
+      "id": "bbe45b6c-b6d9-49b6-8d2f-057a422eba6c",
+      "name": "Assign Owner"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1e4b699c-206d-45e4-a20e-4279a8e5662c",
+                    "leftValue": "={{ $json.conflict === true || $json['Business Type'] === 'Other' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Review"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b49fcdfc-5190-4dd3-8f86-60c7e6b55b1d",
+                    "leftValue": "={{ $json['Business Type'] === 'Professional Makeup Artist' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "C"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8489e0e0-8a31-4a8a-9508-f7b24049307d",
+                    "leftValue": "={{ !['USA', 'Canada'].includes($json['Country']) }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "D1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "63dd346c-a5e7-4dcb-9c91-86d01f088631",
+                    "leftValue": "={{ $json['Business Type'] === 'Online retailer' && $json['Sells on Amazon or Marketplaces?'] === 'Yes' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "D2"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "161c73d5-e05b-4a4b-a294-3faeee8f1893",
+                    "leftValue": "={{ $json['Country'] === 'USA' && ['Retail Store', 'Online retailer', 'Distributor'].includes($json['Business Type']) && $json['Resale Certificate'] !== 'Yes' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "D3"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7c4e33bd-82eb-40bc-94fd-84944e445ed7",
+                    "leftValue": "={{ ['Retail Store', 'Online retailer', 'Distributor'].includes($json['Business Type']) && $json['Estimated First Order'] !== 'Under $500' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "A"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "B"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        -144
+      ],
+      "id": "d999db33-ae1e-464e-b831-7f35354a7e3a",
+      "name": "Tier"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Acme CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1968417122,
+          "mode": "list",
+          "cachedResultName": "Valid Leads"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "lead_id"
+          ],
+          "schema": [
+            {
+              "id": "Business Name",
+              "displayName": "Business Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Business Type",
+              "displayName": "Business Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website or Social Media",
+              "displayName": "Website or Social Media",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "City/State",
+              "displayName": "City/State",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estimated First Order",
+              "displayName": "Estimated First Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Resale Certificate",
+              "displayName": "Resale Certificate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sells on Amazon or Marketplaces?",
+              "displayName": "Sells on Amazon or Marketplaces?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "How did you hear about Acme?",
+              "displayName": "How did you hear about Acme?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lead_id",
+              "displayName": "lead_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "is_update",
+              "displayName": "is_update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prev_tier",
+              "displayName": "prev_tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prev_owner_email",
+              "displayName": "prev_owner_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "first_submitted_at",
+              "displayName": "first_submitted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "conflict",
+              "displayName": "conflict",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tier",
+              "displayName": "tier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "track",
+              "displayName": "track",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reason_code",
+              "displayName": "reason_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_subject",
+              "displayName": "email_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_body",
+              "displayName": "email_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "submitted_at",
+              "displayName": "submitted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "owner_name",
+              "displayName": "owner_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "owner_email",
+              "displayName": "owner_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contact_due_by",
+              "displayName": "contact_due_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notify_owner",
+              "displayName": "notify_owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "team_inbox",
+              "displayName": "team_inbox",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "owner_subject",
+              "displayName": "owner_subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "owner_body",
+              "displayName": "owner_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1856,
+        -144
+      ],
+      "id": "ccd4a0b6-b5fa-4272-9e10-7b3a300eb312",
+      "name": "Save Lead"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Assign Owner').item.json['Email'] }}",
+        "subject": "={{ $('Assign Owner').item.json.email_subject }}",
+        "emailType": "text",
+        "message": "={{ $('Assign Owner').item.json.email_body }}",
+        "options": {
+          "appendAttribution": false,
+          "ccList": "={{ $('Assign Owner').item.json.owner_email }}",
+          "senderName": "Acme Wholesale"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        -288
+      ],
+      "id": "2a1de753-4f47-4699-8d31-7b108fd30a17",
+      "name": "Reply to Applicant"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "70e800b0-307e-482f-922f-3ace6fd36f66",
+              "leftValue": "={{ $('Assign Owner').item.json.notify_owner }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2080,
+        -48
+      ],
+      "id": "a0231466-5fb1-4ad0-88f4-c8fa9941a173",
+      "name": "Notify Owner?"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Assign Owner').item.json.owner_email }}",
+        "subject": "={{ $('Assign Owner').item.json.owner_subject }}",
+        "emailType": "text",
+        "message": "={{ $('Assign Owner').item.json.owner_body }}",
+        "options": {
+          "appendAttribution": false,
+          "ccList": "={{ $('Assign Owner').item.json.team_inbox }}",
+          "senderName": "Acme Lead Alerts"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2352,
+        -64
+      ],
+      "id": "107e5691-0d65-49cf-97d5-de7d1367079e",
+      "name": "Notify Owner"
+    },
+    {
+      "parameters": {
+        "jsCode": "// FIND MATCH\n// Checks if this lead already exists in the Leads sheet,\n// then gives it a Lead ID (reuses the old one, or makes the next number).\n\nconst lead = $('Cleaning').first().json;\nconst rows = $input.all().map(i => i.json).filter(r => r.lead_id);\nconst digits = v => String(v ?? '').replace(/\\D/g, '');\nconst email = String(lead['Email'] ?? '').toLowerCase();\nconst phone = digits(lead['Phone']);\n\n// Duplicate check: same email first, then same phone number\nconst byEmail = rows.find(r => String(r['Email'] ?? '').toLowerCase() === email);\nconst byPhone = phone.length >= 7 ? rows.find(r => digits(r['Phone']) === phone) : null;\nconst existing = byEmail || byPhone;\n\n// Highest Lead ID number so far (Acme-0007 -> 7)\nconst maxId = Math.max(0, ...rows.map(r => parseInt(digits(r.lead_id), 10) || 0));\n\nreturn [{ json: {\n  ...lead,\n  lead_id: existing ? existing.lead_id : 'Acme-' + String(maxId + 1).padStart(4, '0'),\n  is_update: !!existing,\n  prev_tier: existing ? existing.tier : '',\n  prev_owner_email: existing ? existing.owner_email : '',\n  first_submitted_at: existing ? existing.submitted_at : new Date().toISOString(),\n  conflict: !!(byEmail && byPhone && byEmail.lead_id !== byPhone.lead_id),\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        80
+      ],
+      "id": "1fd1f8a5-3a23-4a2a-b0e8-9f74cbbaa251",
+      "name": "Find Match / Lead ID "
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Acme CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Invalids"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Business Name",
+              "displayName": "Business Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Contact Name",
+              "displayName": "Contact Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Business Type",
+              "displayName": "Business Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website or Social Media",
+              "displayName": "Website or Social Media",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "City/State",
+              "displayName": "City/State",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Estimated First Order",
+              "displayName": "Estimated First Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Resale Certificate",
+              "displayName": "Resale Certificate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sells on Amazon or Marketplaces?",
+              "displayName": "Sells on Amazon or Marketplaces?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "How did you hear about Acme?",
+              "displayName": "How did you hear about Acme?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        592,
+        560
+      ],
+      "id": "2ee80484-9f20-45ce-bf61-5f424f08418a",
+      "name": "Invalid - Review"
+    }
+  ],
+  "connections": {
+    "Form": {
+      "main": [
+        [
+          {
+            "node": "Cleaning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleaning": {
+      "main": [
+        [
+          {
+            "node": "Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation": {
+      "main": [
+        [
+          {
+            "node": "Dupe look up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid - Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dupe look up": {
+      "main": [
+        [
+          {
+            "node": "Find Match / Lead ID ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Review": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set C": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set D1": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set D2": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set D3": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set A": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set B": {
+      "main": [
+        [
+          {
+            "node": "Assign Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tier": {
+      "main": [
+        [
+          {
+            "node": "Set Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set C",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set D1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set D2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set D3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set A",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Lead": {
+      "main": [
+        [
+          {
+            "node": "Reply to Applicant",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Owner?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Owner?": {
+      "main": [
+        [
+          {
+            "node": "Notify Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assign Owner": {
+      "main": [
+        [
+          {
+            "node": "Save Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Match / Lead ID ": {
+      "main": [
+        [
+          {
+            "node": "Tier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invalid - Review": {
+      "main": [
+        [
+          {
+            "node": "Notify Sales Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}

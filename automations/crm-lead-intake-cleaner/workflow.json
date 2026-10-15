@@ -1,0 +1,1831 @@
+{
+  "name": "CRM Lead Intake Cleaner",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Lead",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What is your name?"
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Are you willing to put in money to start?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  },
+                  {
+                    "option": "Not sure"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "How old are you?",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -1488,
+        656
+      ],
+      "id": "a340c880-ac4e-4d3d-922a-2805bfffee5e",
+      "name": "New Lead Arrives"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7ec7f8a7-933b-4e85-a894-8fbf52f7b947",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a2c40a27-0512-4a96-a31b-afd303f5f0b9",
+              "leftValue": "={{ $json.age }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5924ff54-3eec-4c91-a77f-71e6b79aa1e0",
+              "leftValue": "={{ $json['Are you willing to put in money to start?'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a9ff568d-6eeb-4952-a7d0-617f594ebc58",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9f2b5617-3377-473b-b931-726157188018",
+              "leftValue": "={{ $json['Phone Number'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1040,
+        656
+      ],
+      "id": "8705d420-c84b-44a5-9f5d-a24a0b836c9f",
+      "name": "Validation"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "07dcd60d-016f-4f84-a221-90d907854c43",
+              "name": "name",
+              "value": "={{ String($json[\"What is your name?\"] || \"\").trim().replace(/\\s+/g, \" \") }}",
+              "type": "string"
+            },
+            {
+              "id": "6fe2b08e-1cc1-4e5d-a4a6-68c94dc567b8",
+              "name": "age",
+              "value": "={{ Number(String($json[\"How old are you?\"] || \"\").trim()) }}",
+              "type": "number"
+            },
+            {
+              "id": "21811e9d-53d9-45af-a033-2b626afb2497",
+              "name": "Are you willing to put in money to start?",
+              "value": "={{ String($json[\"Are you willing to put in money to start?\"] || \"\").trim().toLowerCase() }}",
+              "type": "string"
+            },
+            {
+              "id": "212fc2bc-9ee3-4b9a-a19e-c4a757f02454",
+              "name": "submittedAt",
+              "value": "={{ $json.submittedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "b356c518-5850-4d25-85a1-4b48979aff99",
+              "name": "Email",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "bc4b146a-ef47-41e0-9737-77e34de0b0f1",
+              "name": "Phone Number",
+              "value": "={{ (() => {   const phone = String($json['Phone Number']).replace(/\\D/g, \"\");   if (phone.startsWith(\"63\")) return phone;   if (phone.startsWith(\"0\")) return \"63\" + phone.slice(1);   return \"63\" + phone; })() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -1264,
+        656
+      ],
+      "id": "32b7ff39-e484-4bbd-ae13-6f3bab2058da",
+      "name": "Cleaning"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1267bb56-7b76-4eb4-81f1-1a920555450e",
+              "leftValue": "={{ $('Validation').item.json.age }}",
+              "rightValue": 18,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "a866ca96-e02b-4ae5-93a2-6585df5e50af",
+              "leftValue": "={{ $('Validation').item.json['Are you willing to put in money to start?'] }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        16,
+        -240
+      ],
+      "id": "a90c4bbd-a6d0-48d3-a527-0e5adf04befc",
+      "name": "Qualification"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validation').item.json.Email }}",
+        "subject": "Qualification",
+        "message": "You are qualified, please proceed onto the next step using this link:",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        -336
+      ],
+      "id": "a163fa86-fac2-47c6-8ff2-92ee15da7b84",
+      "name": "Qualification Message"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1997251668,
+          "mode": "list",
+          "cachedResultName": "Review Record"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.Email }}",
+            "Time Submitted": "={{ $json.submittedAt }}",
+            "Willingness": "={{ $json['Are you willing to put in money to start?'] }}",
+            "Age": "={{ $json.age }}",
+            "Phone Number": "={{ $json['Phone Number'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -896,
+        1024
+      ],
+      "id": "503e1f9b-3a22-415b-a6c4-db86d191d702",
+      "name": "Review Record",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sendTo": "you@example.com",
+        "subject": "Lead to review",
+        "message": "This lead ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -672,
+        1024
+      ],
+      "id": "9d18df0e-4e5e-4896-904e-df02e9ac5260",
+      "name": "Notify Employee"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1489264911,
+          "mode": "list",
+          "cachedResultName": "Unqualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Cleaning').item.json.name }}",
+            "Willingness": "={{ $('Cleaning').item.json['Are you willing to put in money to start?'] }}",
+            "Age": "={{ $('Cleaning').item.json.age }}",
+            "Time Submitted": "={{ $('Cleaning').item.json.submittedAt }}",
+            "Email": "={{ $('Cleaning').item.json.Email }}",
+            "Lead ID": "={{ $json['Lead Id'] }}",
+            "Phone Number": "={{ $('Validation').item.json['Phone Number'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        -144
+      ],
+      "id": "90524dde-9e70-4d44-a99e-3de6527049e9",
+      "name": "Unqualified Lead CRM"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead ID": "={{ $json['Lead Id'] }}",
+            "Email": "={{ $('Validation').item.json.Email }}",
+            "Name": "={{ $('Validation').item.json.name }}",
+            "Age": "={{ $('Validation').item.json.age }}",
+            "Willingness": "={{ $('Validation').item.json['Are you willing to put in money to start?'] }}",
+            "Time Submitted": "={{ $('New Lead Arrives').item.json.submittedAt }}",
+            "Phone Number": "={{ $('Validation').item.json['Phone Number'] }}"
+          },
+          "matchingColumns": [
+            "Lead ID"
+          ],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        192,
+        -336
+      ],
+      "id": "64354d9b-d16e-408c-ae8b-d06b3a596737",
+      "name": "Qualified Lead CRM"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validation').item.json.Email }}",
+        "subject": "Qualification",
+        "emailType": "text",
+        "message": "You are not qualified to join in our community",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        -144
+      ],
+      "id": "28f531cd-1e1c-4863-9a74-1b025cefb4d4",
+      "name": "Not Qualified Message"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead ID": "={{ $json['Lead ID'] }}",
+            "Email": "={{ $('Validation').item.json.Email }}",
+            "Phone Number": "={{ $('Validation').item.json['Phone Number'] }}",
+            "Name": "={{ $('Validation').item.json.name }}",
+            "Age": "={{ $('Validation').item.json.age }}",
+            "Willingness": "={{ $('Validation').item.json['Are you willing to put in money to start?'] }}",
+            "Time Submitted": "={{ $('Validation').item.json.submittedAt }}"
+          },
+          "matchingColumns": [
+            "Lead ID"
+          ],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -368,
+        480
+      ],
+      "id": "6051b1dc-5e72-4039-8526-62f0697bfbc6",
+      "name": "Update Duplicates Information",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Information Update",
+        "message": "We would like to notify you that you successfully updated your information in our database",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -192,
+        480
+      ],
+      "id": "d410050d-25c4-47f5-867b-9b934cc6abd5",
+      "name": "Update Email"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "startIndex": "={{ $('Duplication Check in Qualified Sheet').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        736
+      ],
+      "id": "5c233aef-2e7f-4a69-9687-48ae660f4fe5",
+      "name": "Delete old records"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1489264911,
+          "mode": "list",
+          "cachedResultName": "Unqualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Cleaning').item.json.name }}",
+            "Willingness": "={{ $('Cleaning').item.json['Are you willing to put in money to start?'] }}",
+            "Age": "={{ $('Cleaning').item.json.age }}",
+            "Time Submitted": "={{ $('Cleaning').item.json.submittedAt }}",
+            "Email": "={{ $('Cleaning').item.json.Email }}",
+            "Lead ID": "={{ $json['Lead ID'] }}",
+            "Phone Number": "={{ $('Validation').item.json['Phone Number'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -368,
+        736
+      ],
+      "id": "43805950-a74d-4204-ba7c-ccb682594aed",
+      "name": "create new record"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validation').item.json.Email }}",
+        "subject": "Qualification",
+        "emailType": "text",
+        "message": "You are not qualified to join in our community",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        736
+      ],
+      "id": "756b9a82-6a46-4089-bd71-d439ad4fa970",
+      "name": "Updated and not qualified message"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $json.Email }}"
+            },
+            {
+              "lookupColumn": "Phone Number",
+              "lookupValue": "={{ $json['Phone Number'] }}"
+            },
+            {
+              "lookupColumn": "Lead ID"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -816,
+        560
+      ],
+      "id": "0b4a57af-db29-43fb-bab8-aa78809f54a0",
+      "name": "Duplication Look up Qualified Leads",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1489264911,
+          "mode": "list",
+          "cachedResultName": "Unqualified Leads"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email",
+              "lookupValue": "={{ $('Validation').item.json.Email }}"
+            },
+            {
+              "lookupColumn": "Phone Number",
+              "lookupValue": "={{ $('Validation').item.json['Phone Number'] }}"
+            },
+            {
+              "lookupColumn": "Lead ID"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        48
+      ],
+      "id": "c80e116f-f942-403d-8149-9d71e60a4b19",
+      "name": "Duplication Look up unqualified",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "83fd84cf-8a69-424d-8f0d-d20cc1e9f459",
+              "leftValue": "={{ $json['Lead ID'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -320,
+        -80
+      ],
+      "id": "0d5f3935-8a3c-4da7-8384-18eccd80d4d0",
+      "name": "Duplication Check in unqualified sheet"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3c915b40-dd98-41f0-be32-a85dfe69ddaf",
+              "leftValue": "={{ $json['Lead ID'] || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -688,
+        240
+      ],
+      "id": "7ebedb60-89a7-4adf-a1b8-dd294e50c9f7",
+      "name": "Duplication Check in Qualified Sheet",
+      "alwaysOutputData": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1267bb56-7b76-4eb4-81f1-1a920555450e",
+              "leftValue": "={{ $('Validation').item.json.age }}",
+              "rightValue": 18,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "a866ca96-e02b-4ae5-93a2-6585df5e50af",
+              "leftValue": "={{ $('Validation').item.json['Are you willing to put in money to start?'] }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -544,
+        528
+      ],
+      "id": "4954a9dc-9c64-43f3-80c3-2ae7876d36f3",
+      "name": "Qualification for qualified sheet"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "440a2244-9b76-4f82-a771-6cfa6df3a3f8",
+              "name": "Lead Id",
+              "value": "={{ 'LEAD-' + $now.toFormat('yyyyMMddHHmmss') + '-' + $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -160,
+        -240
+      ],
+      "id": "5895182f-a20d-4f77-b3c8-b6755bc02405",
+      "name": "Lead ID for new leads"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1267bb56-7b76-4eb4-81f1-1a920555450e",
+              "leftValue": "={{ $json.Age }}",
+              "rightValue": 18,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "a866ca96-e02b-4ae5-93a2-6585df5e50af",
+              "leftValue": "={{ $json.Willingness }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -144,
+        176
+      ],
+      "id": "46a28022-a4a4-498f-8839-c903640eff55",
+      "name": "Qualification For duplicated unqualified leads"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Lead ID": "={{ $json['Lead ID'] }}",
+            "Email": "={{ $json.Email }}",
+            "Phone Number": "={{ $json['Phone Number'] }}",
+            "Name": "={{ $json.Name }}",
+            "Age": "={{ $json.Age }}",
+            "Willingness": "={{ $json.Willingness }}",
+            "Time Submitted": "={{ $json['Time Submitted'] }}"
+          },
+          "matchingColumns": [
+            "Lead ID"
+          ],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        112
+      ],
+      "id": "195aaa4f-64d2-4b42-a481-c77aa5da0e74",
+      "name": "Qualified leads Update"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1489264911,
+          "mode": "list",
+          "cachedResultName": "Unqualified Leads"
+        },
+        "startIndex": "={{ $('Duplication Check in unqualified sheet').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        112
+      ],
+      "id": "95c90558-c46c-4479-aa3c-4b59da87b0cc",
+      "name": "Updates the unqualified sheet"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1489264911,
+          "mode": "list",
+          "cachedResultName": "Unqualified Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Willingness": "={{ $json.Willingness }}",
+            "Age": "={{ $json.Age }}",
+            "Time Submitted": "={{ $json['Time Submitted'] }}",
+            "Email": "={{ $json.Email }}",
+            "Lead ID": "={{ $json['Lead ID'] }}",
+            "Phone Number": "={{ $json['Phone Number'] }}"
+          },
+          "matchingColumns": [
+            "Lead ID"
+          ],
+          "schema": [
+            {
+              "id": "Lead ID",
+              "displayName": "Lead ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Age",
+              "displayName": "Age",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Willingness",
+              "displayName": "Willingness",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time Submitted",
+              "displayName": "Time Submitted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        288
+      ],
+      "id": "e83deca7-180e-41ce-a2bd-5dcdf63da571",
+      "name": "Unqualified Lead Update"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Project 1: CRM Lead Intake Cleaner"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Qualified Leads"
+        },
+        "startIndex": "={{ $('Qualification For duplicated unqualified leads').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        288,
+        288
+      ],
+      "id": "d4fa86f6-3ca7-4a86-9f67-b3082bc2126a",
+      "name": "Updates the qualified sheets"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validation').item.json.Email }}",
+        "subject": "Qualification",
+        "emailType": "text",
+        "message": "You are not qualified to join in our community",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        288
+      ],
+      "id": "9deebced-85df-464b-8a0c-8aeacb3a329b",
+      "name": "Not Qualified Message 2"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validation').item.json.Email }}",
+        "subject": "Qualification",
+        "message": "You are qualified, please proceed onto the next step using this link:",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        112
+      ],
+      "id": "2c47a8bd-17bc-4e76-9049-afb354ad8d5e",
+      "name": "Qualification Message 2"
+    },
+    {
+      "parameters": {
+        "content": "Updates for Qualified sheets",
+        "height": 464,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "d2b3966e-6aca-4834-b7a0-056b9d823af8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Updates for unqualified sheets",
+        "height": 416,
+        "width": 896,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "c2b27253-83b2-40ec-8d94-79dbf4fcc1b0",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "New leads",
+        "height": 384,
+        "width": 816,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        -352
+      ],
+      "typeVersion": 1,
+      "id": "2a825993-12d4-4074-ba7a-4213300d5191",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Invalid Leads",
+        "height": 176,
+        "width": 432,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -912,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "0c637b10-3f30-43b4-ab05-34296aa9666b",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "New Lead Arrives": {
+      "main": [
+        [
+          {
+            "node": "Cleaning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validation": {
+      "main": [
+        [
+          {
+            "node": "Duplication Look up Qualified Leads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Review Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleaning": {
+      "main": [
+        [
+          {
+            "node": "Validation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualification": {
+      "main": [
+        [
+          {
+            "node": "Qualified Lead CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unqualified Lead CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Record": {
+      "main": [
+        [
+          {
+            "node": "Notify Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unqualified Lead CRM": {
+      "main": [
+        [
+          {
+            "node": "Not Qualified Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualified Lead CRM": {
+      "main": [
+        [
+          {
+            "node": "Qualification Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Duplicates Information": {
+      "main": [
+        [
+          {
+            "node": "Update Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete old records": {
+      "main": [
+        [
+          {
+            "node": "Updated and not qualified message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create new record": {
+      "main": [
+        [
+          {
+            "node": "Delete old records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplication Look up Qualified Leads": {
+      "main": [
+        [
+          {
+            "node": "Duplication Check in Qualified Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplication Look up unqualified": {
+      "main": [
+        [
+          {
+            "node": "Duplication Check in unqualified sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplication Check in unqualified sheet": {
+      "main": [
+        [
+          {
+            "node": "Lead ID for new leads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Qualification For duplicated unqualified leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplication Check in Qualified Sheet": {
+      "main": [
+        [
+          {
+            "node": "Duplication Look up unqualified",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Qualification for qualified sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualification for qualified sheet": {
+      "main": [
+        [
+          {
+            "node": "Update Duplicates Information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "create new record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead ID for new leads": {
+      "main": [
+        [
+          {
+            "node": "Qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualification For duplicated unqualified leads": {
+      "main": [
+        [
+          {
+            "node": "Qualified leads Update",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unqualified Lead Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualified leads Update": {
+      "main": [
+        [
+          {
+            "node": "Updates the unqualified sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updates the unqualified sheet": {
+      "main": [
+        [
+          {
+            "node": "Qualification Message 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unqualified Lead Update": {
+      "main": [
+        [
+          {
+            "node": "Updates the qualified sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updates the qualified sheets": {
+      "main": [
+        [
+          {
+            "node": "Not Qualified Message 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}

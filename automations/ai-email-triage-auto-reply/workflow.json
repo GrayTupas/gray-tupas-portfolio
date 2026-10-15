@@ -1,0 +1,2289 @@
+{
+  "name": "Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e4b918a-2e0d-4224-815a-41f9689f0a2f",
+              "name": "config.businessName",
+              "value": "Courier Co",
+              "type": "string"
+            },
+            {
+              "id": "38af8fe9-5fe2-4352-9be0-348960b5f67b",
+              "name": "config.signOff",
+              "value": "Courier Co Support Team",
+              "type": "string"
+            },
+            {
+              "id": "2d91e001-e58e-43ea-80f5-7e1af34ebf0d",
+              "name": "config.tone",
+              "value": "friendly, professional, concise",
+              "type": "string"
+            },
+            {
+              "id": "9317e7cf-9ee8-4375-bbae-60a0b72c06e9",
+              "name": "config.testMode",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "1754800a-82dc-4f95-952e-9f9f46a3f9ad",
+              "name": "config.autoSend",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "73f2f6b9-b4c6-4e63-b884-e9cb698b8e99",
+              "name": "config.startDate",
+              "value": "2026-10-04",
+              "type": "string"
+            },
+            {
+              "id": "0d86753b-ba73-47c0-b80d-30b550b850c4",
+              "name": "config.devWhatsApp",
+              "value": "639920465269",
+              "type": "string"
+            },
+            {
+              "id": "1bb40b38-66eb-4db1-8154-f71f4126049d",
+              "name": "config.sheetId",
+              "value": "1abrTQmj0uoIKjgtEDjIxK7KMpQN2PyRj",
+              "type": "string"
+            },
+            {
+              "id": "1324f40a-718f-4e6d-891d-7b42dc1c6d32",
+              "name": "config.minConfidence",
+              "value": 0.8,
+              "type": "number"
+            },
+            {
+              "id": "2433ddc2-acc2-4d51-9cbf-8a9c862f7e09",
+              "name": "config.ownAddresses",
+              "value": "[\"you@example.com\", \"inbox@example.com\"]",
+              "type": "array"
+            },
+            {
+              "id": "6e5cbcea-48e8-4722-a6e7-5fcb586f35b2",
+              "name": "config.leadAlertEmail",
+              "value": "you@example.com",
+              "type": "string"
+            },
+            {
+              "id": "c2b84e28-c4d5-4ff8-b9c8-6b5794697836",
+              "name": "config.complaintAlertEmail",
+              "value": "you@example.com",
+              "type": "string"
+            },
+            {
+              "id": "47fa3947-5994-4bad-b302-c2f5eabd75ac",
+              "name": "config.signatureHtml",
+              "value": "<br><table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"max-width:560px;color:rgb(51,51,51);border-collapse:collapse;font-family:Arial,sans-serif\"><tr><td colspan=\"2\" style=\"border-bottom:1px dotted rgb(153,153,153);padding-bottom:8px\"><div style=\"line-height:22px;font-size:16px\"><b>Customer Service Team</b></div><div style=\"line-height:20px;font-size:14px;color:rgb(31,111,181)\">Courier Co Singapore</div></td></tr><tr><td style=\"border-bottom:1px dotted rgb(153,153,153);padding:14px 18px 14px 0;vertical-align:middle\"><a href=\"https://example.com\" style=\"text-decoration:none\"><img alt=\"Courier Co\" width=\"170\" height=\"43\" src=\"https://example.com\" style=\"width:170px;height:43px;display:block\"></a></td><td style=\"border-bottom:1px dotted rgb(153,153,153);padding:14px 0;vertical-align:top;font-size:12px;line-height:19px\">Telephone: <a href=\"tel:+6565361800\">+65 6536 1800</a><br>Email: <a href=\"mailto:service@example.com\" style=\"color:rgb(51,51,51);text-decoration:none\">service@example.com</a><br>Website: <a href=\"https://example.com\" style=\"color:rgb(51,51,51);text-decoration:none\">www.Courier Coexpress.com.sg</a><br>Address: 317 Outram Road #01-33 Concorde Shopping Centre,<br>Holiday Inn Atrium, Singapore 169075<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"margin-top:8px;border-collapse:collapse\"><tr><td align=\"center\" style=\"background-color:rgb(24,119,242);width:24px;height:24px\"><a href=\"https://example.com\" style=\"color:#fff;text-decoration:none;display:block;font-size:14px;line-height:24px\"><b>f</b></a></td><td style=\"width:6px\"></td><td align=\"center\" style=\"background-color:rgb(10,102,194);width:24px;height:24px\"><a href=\"https://example.com\" style=\"color:#fff;text-decoration:none;display:block;font-size:12px;line-height:24px\"><b>in</b></a></td></tr></table></td></tr></table>",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        432,
+        0
+      ],
+      "id": "6022c0fc-25a3-4f3e-9f27-6d077d088d3b",
+      "name": "config"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "bodyHtml",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "bodyText",
+              "cssSelector": "body",
+              "skipSelectors": "style, script"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        0
+      ],
+      "id": "1f4d65b2-9536-45fe-b742-8646bd03dc3c",
+      "name": "clean body"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2a99b64-18dc-44db-8c42-2a073c751c5f",
+              "name": "messageId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "2d5188e2-32bd-463a-82e1-9b338a69139f",
+              "name": "internetMessageId",
+              "value": "={{ $json.internetMessageId }}",
+              "type": "string"
+            },
+            {
+              "id": "fdc2e19f-d87c-415f-b7c7-04d3eaff5921",
+              "name": "conversationId",
+              "value": "={{ $json.conversationId }}",
+              "type": "string"
+            },
+            {
+              "id": "cdcbe340-6455-4bda-9603-3b81b5bcdc83",
+              "name": "from",
+              "value": "={{ $json.from.emailAddress.address }}",
+              "type": "string"
+            },
+            {
+              "id": "4b8483bf-865a-4685-a0ca-0d7688821b87",
+              "name": "fromName",
+              "value": "={{ $json.from.emailAddress.name }}",
+              "type": "string"
+            },
+            {
+              "id": "eb66d14d-f5dd-45cf-9feb-638378f0cb85",
+              "name": "subject",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "af3506cc-e3e0-40cc-a335-b3f5546784b9",
+              "name": "bodyHtml",
+              "value": "={{ $json.body.content }}",
+              "type": "string"
+            },
+            {
+              "id": "2b59c5d3-4518-4eb5-af35-da013ebce4e4",
+              "name": "receivedAt",
+              "value": "={{ $json.receivedDateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "6aad4f6c-0112-4fee-be38-e46ad296ab15",
+              "name": "hasAttachments",
+              "value": "={{ $json.hasAttachments }}",
+              "type": "boolean"
+            },
+            {
+              "id": "2d4df392-3601-4364-aaec-36f3dc36d362",
+              "name": "categories",
+              "value": "={{ $json.categories }}",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "include": "selected",
+        "includeFields": "config",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "19831cda-cea1-446a-91f9-c2f2f32bd27e",
+      "name": "normalize"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "9bf116ab-1fce-4663-b550-fba49f1e4417",
+      "name": "merge body"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "output": "raw",
+        "filters": {
+          "foldersToInclude": [
+            "AQMkADAwATMwMAExLWE5OQBjLWY1MDEtMDACLTAwCgAuAAADY5fg8Nw2UE_y1a1CkUlZ4QEAr-6BHw5sOkuNpao7NLblTwAAAgEMAAAA",
+            "AQMkADAwATMwMAExLWE5OQBjLWY1MDEtMDACLTAwCgAuAAADY5fg8Nw2UE_y1a1CkUlZ4QEAr-6BHw5sOkuNpao7NLblTwAAAgEWAAAA"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlookTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "540624fc-35bf-4168-b09e-a8610e84bc49",
+      "name": "email in"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3fb2e1c0-9e2f-46e8-9583-69501d12e93e",
+              "name": "skipReason",
+              "value": "={{\n  ($json.categories ?? []).includes('AI-Processed') ? 'already_processed'\n  : $json.receivedAt < $json.config.startDate ? 'before_start_date'\n  : !$json.from ? 'no_sender'\n  : (/no-?reply|mailer-daemon|postmaster/i.test($json.from) || ($json.config.ownAddresses ?? []).map(a => a.toLowerCase()).includes($json.from.toLowerCase())) ? 'automated_sender'\n  : /^(automatic reply|auto-?reply|out of office)/i.test($json.subject) ? 'auto_reply'\n  : (!$json.bodyText && !$json.hasAttachments) ? 'empty_body'\n  : ''\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "c71d0cae-57d8-4f2c-8017-dce1bd0cfb7c",
+      "name": "guards"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "27b65e0a-04be-408e-b315-26635599b3a6",
+              "leftValue": "={{ $json.skipReason }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        0
+      ],
+      "id": "2509c30c-c1d8-43d6-ac46-033ebc30d9bd",
+      "name": "should process?"
+    },
+    {
+      "parameters": {
+        "text": "=From: {{ $json.fromName }} <{{ $json.from }}>\nSubject: {{ $json.subject }}\nReceived: {{ $json.receivedAt }}\n\n{{ $json.bodyText }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "category",
+              "description": "One of: quote_request, general_question, corporate_lead, complaint, booking, spam, needs_review. Use needs_review if the email refers to a previous conversation, is too vague to act on, or doesn't clearly relate to deliveries, prices, bookings or complaints. Example: \"Please arrange a pickup from X to Y tomorrow\" = booking (no price asked). \"How much to send from X to Y?\" = quote_request.",
+              "required": true
+            },
+            {
+              "name": "confidence",
+              "type": "number",
+              "description": "How sure you are about the category, from 0 to 1. Use below 0.6 when the email is vague or you are choosing between two categories",
+              "required": true
+            },
+            {
+              "name": "pickupArea",
+              "description": "The Singapore neighbourhood or area name only (e.g. \"Bugis\" for \"10 Bugis St\"). Empty if not stated. Never guess."
+            },
+            {
+              "name": "dropoffArea",
+              "description": "The Singapore neighbourhood or area name only (e.g. \"Hougang\" for \"5 Hougang Ave\"). Empty if not stated. Never guess."
+            },
+            {
+              "name": "weightKg",
+              "type": "number",
+              "description": "Total weight in kg as a number. If they say \"less than X\", use X. Empty if not stated. Never guess."
+            },
+            {
+              "name": "serviceTier",
+              "description": "Only fill this if the customer explicitly names a speed (e.g. \"3 hours\", \"90 minutes\", \"same day\"). One of: 1_day, 3_hours, 90_min, 60_min. Otherwise leave empty. Timing like \"by 3pm\" goes in deadline. If unsure, leave empty. Never infer a speed from words like 'today' or 'urgent'."
+            },
+            {
+              "name": "ways",
+              "type": "number",
+              "description": "1 for one-way, 2 if something comes back, 3 for an extra stop. Default 1."
+            },
+            {
+              "name": "deadline",
+              "description": "The customer's own words about timing, e.g. \"by 3pm today\". Empty if none."
+            },
+            {
+              "name": "companyName",
+              "description": "Company or organization name as written in the email body or signature. Do not use the sender's email address or domain. Leave empty if no company name is stated."
+            },
+            {
+              "name": "monthlyVolume",
+              "type": "number",
+              "description": "Deliveries per month if stated or clearly implied. Empty if not."
+            },
+            {
+              "name": "summary",
+              "description": "One sentence a busy owner can read on a phone lock screen."
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batchSize": 1,
+            "delayBetweenBatches": 13000
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        -272
+      ],
+      "id": "9cb4ebc0-ac33-4f19-bb35-622e9fc52604",
+      "name": "Information Extractor",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        -112
+      ],
+      "id": "2366ab5d-2491-4918-8ecc-ce3c3b9db812",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2160,
+        -96
+      ],
+      "id": "0b5fc26a-3385-441a-98c5-efb91a70a09c",
+      "name": "merge AI"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ ($json.output.confidence ?? 0) < $json.config.minConfidence || $json.output.category === 'needs_review' }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "8b38459f-beb0-44ab-a94b-04a0bfcb2d08"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "human_review"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cff54382-9786-48ea-a7eb-33a47205124f",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "quote_request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "quote"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d17529e2-31fc-476c-b683-d79c41d5e762",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "general_question",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "faq"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "810fa7b7-f14f-469d-b41d-ed0436d6bb38",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "corporate_lead",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "lead"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7e642a8c-124a-497d-b908-d7ae7f485783",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "complaint",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "complaint"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f49fe3cc-1222-4edd-abdd-34c41196715c",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "=booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "booking"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "53398b84-804d-48e4-a446-0be389c86823",
+                    "leftValue": "={{ $json.output.category }}",
+                    "rightValue": "spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "spam"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": 0
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2320,
+        -592
+      ],
+      "id": "aab88f9f-5746-4074-a0c8-6d0666e0d4b0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1787342f-377e-487f-bc43-96683a6eba79",
+              "name": "actionTaken",
+              "value": "needs_human",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2656,
+        -880
+      ],
+      "id": "3e1b5cd0-ce2f-47dc-9332-3722937b6253",
+      "name": "Set: needs human"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cda6a10-0635-4294-8aaf-eba0888e0dfb",
+              "name": "actionTaken",
+              "value": "tagged_only",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2656,
+        96
+      ],
+      "id": "e51b7cd4-1b05-404f-8103-ef979f7a66cd",
+      "name": "Set: tagged only"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "messageId": {
+          "__rl": true,
+          "value": "={{ $('normalize').item.json.messageId }}",
+          "mode": "id"
+        },
+        "updateFields": {
+          "categories": "={{ ['AI-Processed', $('Switch').item.json.output.category] }}"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        5504,
+        -544
+      ],
+      "id": "4e0a67b7-32e8-41f4-a6d0-9058f9eec30e",
+      "name": "tag in outlook"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1711337262,
+          "mode": "list",
+          "cachedResultName": "Log"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('merge AI').item.json.internetMessageId }}",
+            "conversation_id": "={{ $('merge AI').item.json.conversationId }}",
+            "from": "={{ $('merge AI').item.json.from }}",
+            "subject": "={{ $('merge AI').item.json.subject }}",
+            "received_at": "={{ $('merge AI').item.json.receivedAt }}",
+            "processed_at": "={{ $now.toUTC().toISO() }}",
+            "category": "={{ $('merge AI').item.json.output.category }}",
+            "confidence": "={{ $('merge AI').item.json.output.confidence }}",
+            "action_taken": "={{ $json.actionTaken }}",
+            "draft_created": "false",
+            "alert_sent": "={{ $json.alertSent === true }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "action_taken",
+              "displayName": "action_taken",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "draft_created",
+              "displayName": "draft_created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alert_sent",
+              "displayName": "alert_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skip_reason",
+              "displayName": "skip_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        5920,
+        -528
+      ],
+      "id": "b4c3f684-2814-491e-81f7-d05a756274e8",
+      "name": "write log"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 465083964,
+          "mode": "list",
+          "cachedResultName": "Not processed logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $json.messageId }}",
+            "conversation_id": "={{ $json.conversationId }}",
+            "from": "={{ $json.from }}",
+            "subject": "={{ $json.subject }}",
+            "received_at": "={{ $json.receivedAt }}",
+            "processed_at": "={{ $now.toUTC().toISO() }}",
+            "confidence": "={{ $json.config.minConfidence }}",
+            "skip_reason": "={{ $json.skipReason }}",
+            "action_taken": "skipped"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversation_id",
+              "displayName": "conversation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_at",
+              "displayName": "processed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "action_taken",
+              "displayName": "action_taken",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draft_created",
+              "displayName": "draft_created",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "alert_sent",
+              "displayName": "alert_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "skip_reason",
+              "displayName": "skip_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1808,
+        80
+      ],
+      "id": "c01b653a-b711-4c1c-b9db-add21a9d38fc",
+      "name": "Not processed log"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1718089306,
+          "mode": "list",
+          "cachedResultName": "KB_FAQ"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2656,
+        -544
+      ],
+      "id": "45736e15-df31-47b1-af13-25d912113112",
+      "name": "Read KB"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        3824,
+        -384
+      ],
+      "id": "549f640a-3391-4912-bb21-746f490881b5",
+      "name": "Google Gemini Chat Model1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "832e7481-5512-4baf-9200-b3b37e222fb7",
+              "leftValue": "={{ $json.active }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        2880,
+        -544
+      ],
+      "id": "4e93f129-03df-4ef8-8b56-f603889369f9",
+      "name": "keep active"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "kb",
+        "include": "specifiedFields",
+        "fieldsToInclude": "question, approved_answer",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3088,
+        -544
+      ],
+      "id": "b987db86-3443-4759-bbd4-559e424a0947",
+      "name": "combine KB"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3296,
+        -544
+      ],
+      "id": "d99dd533-15ff-46fe-ad6d-14b4a0b279ec",
+      "name": "attach KB"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are writing a reply email for {{ $('Switch').item.json.config.businessName }}, a courier company in Singapore.\n\nRules:\n- Answer ONLY using the approved answers below. Never add facts, prices, promises or policies that are not in them.\n- If the facts don't cover part of the question, add ONE short sentence saying our team will confirm that part. Skip this if the facts already say the team will follow up. Never promise a follow-up twice.\n- Tone: {{ $('Switch').item.json.config.tone }}. Under 120 words.\n- Start with \"Hi {{ $('Switch').item.json.fromName }},\" and end with:\nKind regards,\n- Output only the email body. No subject line, no notes.\n- Answer only what the customer asked. Do not add extra information they didn't ask for. Do NOT mention corporate accounts unless the customer asks about them.\n- Start with \"Hi <name>,\" using the name the customer signed with. If they didn't sign, use the first name from: {{ $json.fromName }}\n\nFacts you may use:\n{{ $json.replyBrief }}\n\nCustomer email:\nSubject: {{ $('Switch').item.json.subject }}\n{{ $('Switch').item.json.bodyText }}",
+        "batching": {
+          "batchSize": 1,
+          "delayBetweenBatches": 13000
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        3824,
+        -544
+      ],
+      "id": "1ce28498-42b2-4dfa-8ee2-c4530be64750",
+      "name": "write reply"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4192,
+        -544
+      ],
+      "id": "a64af05f-5ad5-4e2f-9502-71fccdb98480",
+      "name": "merge reply"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": {
+          "__rl": true,
+          "value": "={{ $('should process?').item.json.messageId }}",
+          "mode": "id"
+        },
+        "message": "={{ $json.text.trim().replace(/\\n/g, '<br>') + ($json.config?.signatureHtml ?? '') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        4704,
+        -560
+      ],
+      "id": "d25c8163-9fd3-4c28-b20d-e2ac724d1a4c",
+      "name": "send reply"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5280,
+        -544
+      ],
+      "id": "b15a3963-4b7a-4373-81bd-a7edcc77954c",
+      "name": "close-out"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        5728,
+        -528
+      ],
+      "id": "93409fc9-e3dd-4c93-9641-5cb6faba45b7",
+      "name": "Merge close"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "efceea9b-235a-40c9-b55b-52ad27741a96",
+              "name": "replyBrief",
+              "value": "Thank them for the booking request. Pickups are booked through our form at https://example.com/book (TEST LINK). Confirmation takes 10–15 minutes after submitting. Do not confirm the booking yourself and do not quote a price.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2656,
+        -64
+      ],
+      "id": "7626deb3-43c3-4109-9b82-b6d44810085b",
+      "name": "Set: booking brief"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "475437a6-f010-41f1-b705-36e90b1831b8",
+              "name": "replyBrief",
+              "value": "={{ $json.kb.map(r => 'Q: ' + r.question + '\\nA: ' + r.approved_answer).join('\\n\\n') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        3488,
+        -544
+      ],
+      "id": "3a3177e5-7e90-4fe2-83f1-b7c8db2654bb",
+      "name": "Set: faq brief"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3664,
+        -544
+      ],
+      "id": "8b2c1dbe-17a9-4584-a60c-461017d2b8d6",
+      "name": "reply-in"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a2c19b46-6879-4907-aac8-0f029107e10d",
+              "name": "actionTaken",
+              "value": "reply_sent",
+              "type": "string"
+            },
+            {
+              "id": "b0c97ce9-f1e1-4d3f-9f00-3a9fca0f7c29",
+              "name": "messageId",
+              "value": "={{ $('merge reply').item.json.messageId }}",
+              "type": "string"
+            },
+            {
+              "id": "819b598a-0dc6-4fd9-a442-143bcb7f56d5",
+              "name": "output",
+              "value": "={{ $('merge reply').item.json.output }}",
+              "type": "object"
+            },
+            {
+              "id": "63133207-cc9b-443d-a07c-804937cc051e",
+              "name": "alertSent",
+              "value": "={{ $('merge reply').item.json.alertSent ?? false }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        5008,
+        -544
+      ],
+      "id": "37287c8c-29ad-4792-bac7-c75c923fed7b",
+      "name": "Set: reply_sent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8600d13b-69dd-40e7-a99d-4f6d56fd2097",
+              "leftValue": "={{ !!$json.replyBrief && !!$json.config?.businessName && !!$json.messageId && !$json.text.includes('[') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4416,
+        -544
+      ],
+      "id": "a229e8d0-91c4-4e66-87a5-c28fff52a7b3",
+      "name": "reply ok?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1787342f-377e-487f-bc43-96683a6eba79",
+              "name": "actionTaken",
+              "value": "needs_blocked",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4704,
+        -384
+      ],
+      "id": "f81075f8-f507-4e8f-83fc-128dbf048bae",
+      "name": "Set: reply_blocked"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.config.leadAlertEmail }}",
+        "subject": "=[LEAD] {{ $json.output.companyName || $json.fromName }}",
+        "bodyContent": "=<b>New corporate lead</b><br><br>\n<b>From:</b> {{ $json.fromName }} ({{ $json.from }})<br>\n<b>Company:</b> {{ $json.output.companyName || 'not stated' }}<br>\n<b>Monthly volume:</b> {{ $json.output.monthlyVolume || 'not stated' }}<br>\n<b>Summary:</b> {{ $json.output.summary }}<br><br>\n<b>Original message:</b><br>{{ $json.bodyText.replace(/\\n/g, '<br>') }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2656,
+        -384
+      ],
+      "id": "47e09d01-a3d0-4c7c-813e-3f332eea42df",
+      "name": "send lead alert",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7697f18-f656-4cce-b750-373150c50fb7",
+              "name": "alertSent",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "f8b6a160-ecd6-44fe-be15-ae869210f4b9",
+              "name": "replyBrief",
+              "value": "Thank them for their interest in a corporate arrangement. Confirm a member of our team will contact them within 1 business day to discuss their needs. Do not quote prices or promise specific terms.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        3088,
+        -384
+      ],
+      "id": "a1bd0063-b96b-4850-bbf3-c0de15b2b966",
+      "name": "Set: lead brief"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferLast"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2880,
+        -384
+      ],
+      "id": "7039b450-8042-485d-b61b-6c60a89f3b53",
+      "name": "Merge lead"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferLast"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2880,
+        -224
+      ],
+      "id": "b87f2188-cca3-437e-85e5-2a04fb2759fa",
+      "name": "Merge complaint"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $json.config.complaintAlertEmail }}",
+        "subject": "=[COMPLAINT – respond today] {{ $json.fromName }}",
+        "bodyContent": "=<b>Customer complaint, respond today</b><br><br>\n<b>From:</b> {{ $json.fromName }} ({{ $json.from }})<br>\n<b>Subject:</b> {{ $json.subject }}<br>\n<b>Received:</b> {{ DateTime.fromISO($json.receivedAt).setZone('Asia/Singapore').toFormat('d MMM yyyy, h:mm a') }} (SGT)<br>\n<b>Summary:</b> {{ $json.output.summary }}<br><br>\n<b>Original message:</b><br>{{ $json.bodyText.replace(/\\n/g, '<br>') }}<br><br>\n<i>The customer has received an automatic apology saying our team will contact them today.</i>",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2656,
+        -224
+      ],
+      "id": "ef1260e0-553e-485b-893e-87c06c86d74a",
+      "name": "send complaint alert",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7697f18-f656-4cce-b750-373150c50fb7",
+              "name": "alertSent",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "f8b6a160-ecd6-44fe-be15-ae869210f4b9",
+              "name": "replyBrief",
+              "value": "Apologise sincerely for the trouble. Confirm the issue has been passed to our team, who will contact them today. Do not promise refunds, compensation or any outcome. Do not make excuses.",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        3088,
+        -224
+      ],
+      "id": "b73cf7e1-bea5-4266-9236-54fc67ae368d",
+      "name": "Set: complain brief"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        -704
+      ],
+      "id": "add26b2e-1326-4360-8428-569b2c2c8432",
+      "name": "quote-in"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1099188474,
+          "mode": "list",
+          "cachedResultName": "Rates"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2880,
+        -704
+      ],
+      "id": "7a6b4b49-762e-457a-9675-f18161bb3d58",
+      "name": "Read rates",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 621360409,
+          "mode": "list",
+          "cachedResultName": "Zones"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3088,
+        -704
+      ],
+      "id": "804aecb3-3049-474b-ae3a-1bfe2f4c025b",
+      "name": "Read zones",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID",
+          "mode": "list",
+          "cachedResultName": "Email"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 438986492,
+          "mode": "list",
+          "cachedResultName": "ZoneSurcharge"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3296,
+        -704
+      ],
+      "id": "a2bbd0a5-4200-4458-9d0c-bfd9ec3bbe00",
+      "name": "Read surcharges",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Calculate Quote — Run Once for Each Item\nconst rates      = $('Read rates').all().map(i => i.json);\nconst zones      = $('Read zones').all().map(i => i.json);\nconst surcharges = $('Read surcharges').all().map(i => i.json);\n\nconst e = $json;\nconst o = e.output ?? {};\nconst link = 'https://example.com/book (TEST LINK)';\nconst WAY_MULT = { 1: 1, 2: 1.8, 3: 2.5 };   // from FAQ-10\nconst TIER_LABEL = { '1_day': 'same-day', '3_hours': '3-hour express', '90_min': '90-minute express', '60_min': '60-minute express' };\n\nconst norm = s => String(s ?? '').trim().toLowerCase();\nconst zoneOf = area => zones.find(z => norm(z.area) === norm(area))?.zone ?? null;\n\n// Price for one service tier, or null if we can't serve it\nfunction priceFor(tier, weight, fromZone, toZone, ways) {\n  const bike = rates.find(r => norm(r.vehicle) === 'bike' && norm(r.service_tier) === tier);\n  const van  = rates.find(r => norm(r.vehicle) === 'van'  && norm(r.service_tier) === tier);\n  const rate = [bike, van].find(r => r && weight <= Number(r.max_kg));\n  const sur  = surcharges.find(s => norm(s.from_zone) === norm(fromZone) && norm(s.to_zone) === norm(toZone));\n  if (!rate || !sur) return null;\n  const extraKg = Math.max(0, Math.ceil(weight - Number(rate.included_kg)));\n  const oneWay  = Number(rate.base_price_sgd) + Number(sur.surcharge_sgd) + extraKg * Number(rate.extra_per_kg_sgd);\n  return {\n    vehicle: norm(rate.vehicle),\n    priceSgd: Math.round(oneWay * WAY_MULT[ways] * 100) / 100,\n    bookDayAhead: String(rate.book_day_ahead).toUpperCase() === 'TRUE',\n  };\n}\n\n// 1. Unknown area? We can't quote regardless of other details.\nconst fromZone = o.pickupArea  ? zoneOf(o.pickupArea)  : null;\nconst toZone   = o.dropoffArea ? zoneOf(o.dropoffArea) : null;\nconst unknownArea = (o.pickupArea && !fromZone) || (o.dropoffArea && !toZone);\n\n// 2. Missing details?\nconst missing = [];\nif (!o.pickupArea)  missing.push('pickup location');\nif (!o.dropoffArea) missing.push('drop-off location');\nif (o.weightKg === undefined || o.weightKg === null || o.weightKg === '') missing.push('approximate weight');\n\nlet quote, replyBrief;\n\nif (unknownArea) {\n  quote = { status: 'cannot_quote', reason: 'location not in our zone list' };\n} else if (missing.length) {\n  quote = { status: 'missing_info', missing };\n  replyBrief = `We can quote as soon as we have: ${missing.join(', ')}. Ask the customer for these details. Do not guess or give any price.`;\n} else {\n  const weight = Number(o.weightKg);\n  const ways   = WAY_MULT[Number(o.ways)] ? Number(o.ways) : 1;\n  const tier   = TIER_LABEL[o.serviceTier] ? o.serviceTier : '1_day';\n  const main   = priceFor(tier, weight, fromZone, toZone, ways);\n\n  if (!main) {\n    quote = { status: 'cannot_quote', reason: 'weight or service outside our standard rates' };\n  } else {\n    const sgt = DateTime.fromISO(e.receivedAt).setZone('Asia/Singapore');\n    const afterCutoff = tier === '1_day' && ((sgt.weekday <= 5 && sgt.hour >= 11) || sgt.weekday === 7);\n\n    quote = { status: 'quoted', tier, ways, fromZone, toZone, weightKg: weight, ...main, afterCutoff };\n\n    const lines = [\n      `Price: SGD ${main.priceSgd.toFixed(2)} for ${TIER_LABEL[tier]} ${main.vehicle} delivery from ${o.pickupArea} to ${o.dropoffArea}, ${weight} kg${ways > 1 ? `, ${ways}-way` : ''}.`,\n    ];\n    if (main.bookDayAhead) lines.push('Van deliveries must be booked one day in advance.');\n    if (afterCutoff) {\n      lines.push('This request came in after our 11:00 AM same-day cut-off, so same-day service would be scheduled for the next business day.');\n      const express = priceFor('3_hours', weight, fromZone, toZone, ways);\n      if (express) lines.push(`If they need it today, our 3-hour express is SGD ${express.priceSgd.toFixed(2)}.`);\n    }\n    lines.push(`Book through ${link}. Confirmation takes 10–15 minutes.`);\n    lines.push('State the price exactly as written. Do not add discounts, promises or other prices.');\n    replyBrief = lines.join('\\n');\n  }\n}\n\n// Shared brief for every \"cannot quote\" case\nif (quote.status === 'cannot_quote') {\n  replyBrief = `We cannot give an instant quote for this request (${quote.reason}). Say our team will reply with a quote today. This is the whole message: do not add any other notes, prices or promises.`;\n}\n\nreturn { json: { ...e, quote, replyBrief } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3664,
+        -704
+      ],
+      "id": "0c013cb8-b163-4c6f-a953-cbaac0f37208",
+      "name": "Calculate quote"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3488,
+        -704
+      ],
+      "id": "e09b5c60-1e52-40b3-a460-ae5fc877139a",
+      "name": "wait for tables"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        224,
+        -544
+      ],
+      "id": "2c9af4b1-e378-4334-94c9-83435da8e97a",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "toRecipients": "you@example.com",
+        "subject": "⚠️ Email automation failed",
+        "bodyContent": "=<b>The email automation hit an error.</b><br><br>\n<b>Workflow:</b> {{ $json.workflow.name }}<br>\n<b>Failed node:</b> {{ $json.execution.lastNodeExecuted }}<br>\n<b>Error:</b> {{ $json.execution.error.message }}<br>\n<b>Time:</b> {{ $now.setZone('Asia/Singapore').toFormat('d MMM yyyy, h:mm a') }} SGT<br><br>\n<a href=\"{{ $json.execution.url }}\">Open the failed execution</a>",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        448,
+        -544
+      ],
+      "id": "0d6edc03-0193-465a-8b56-c637b42e3107",
+      "name": "Send a message"
+    },
+    {
+      "parameters": {
+        "content": "Email intake",
+        "height": 592,
+        "width": 1616,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "d3610562-a3ef-420f-814f-d434a50e28db",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Email sorting",
+        "height": 1280,
+        "width": 1494,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2288,
+        -976
+      ],
+      "typeVersion": 1,
+      "id": "586ab16e-7ff1-47bf-b129-dd34bdfdf623",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Email reply",
+        "height": 528,
+        "width": 2240,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        3792,
+        -688
+      ],
+      "typeVersion": 1,
+      "id": "a4ec2621-3499-4c28-ba43-9459751a3003",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Error notifer",
+        "height": 272,
+        "width": 560,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        -624
+      ],
+      "typeVersion": 1,
+      "id": "8a0140ab-0fae-468f-95b4-224ca0b2aa73",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "config": {
+      "main": [
+        [
+          {
+            "node": "normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "normalize": {
+      "main": [
+        [
+          {
+            "node": "clean body",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "merge body",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "clean body": {
+      "main": [
+        [
+          {
+            "node": "merge body",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "email in": {
+      "main": [
+        [
+          {
+            "node": "config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge body": {
+      "main": [
+        [
+          {
+            "node": "guards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "guards": {
+      "main": [
+        [
+          {
+            "node": "should process?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "should process?": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "merge AI",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Not processed log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "merge AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge AI": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Set: needs human",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "quote-in",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read KB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "attach KB",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "send lead alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge lead",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "send complaint alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge complaint",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Set: booking brief",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set: tagged only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: needs human": {
+      "main": [
+        [
+          {
+            "node": "close-out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: tagged only": {
+      "main": [
+        [
+          {
+            "node": "close-out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tag in outlook": {
+      "main": [
+        [
+          {
+            "node": "Merge close",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read KB": {
+      "main": [
+        [
+          {
+            "node": "keep active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "write reply",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keep active": {
+      "main": [
+        [
+          {
+            "node": "combine KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "combine KB": {
+      "main": [
+        [
+          {
+            "node": "attach KB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "attach KB": {
+      "main": [
+        [
+          {
+            "node": "Set: faq brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "write reply": {
+      "main": [
+        [
+          {
+            "node": "merge reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge reply": {
+      "main": [
+        [
+          {
+            "node": "reply ok?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send reply": {
+      "main": [
+        [
+          {
+            "node": "Set: reply_sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "write log": {
+      "main": [
+        []
+      ]
+    },
+    "close-out": {
+      "main": [
+        [
+          {
+            "node": "tag in outlook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge close",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge close": {
+      "main": [
+        [
+          {
+            "node": "write log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: faq brief": {
+      "main": [
+        [
+          {
+            "node": "reply-in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: booking brief": {
+      "main": [
+        [
+          {
+            "node": "reply-in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reply-in": {
+      "main": [
+        [
+          {
+            "node": "write reply",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "merge reply",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set: reply_sent": {
+      "main": [
+        [
+          {
+            "node": "close-out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reply ok?": {
+      "main": [
+        [
+          {
+            "node": "send reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set: reply_blocked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: reply_blocked": {
+      "main": [
+        [
+          {
+            "node": "close-out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send lead alert": {
+      "main": [
+        [
+          {
+            "node": "Merge lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: lead brief": {
+      "main": [
+        [
+          {
+            "node": "reply-in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge lead": {
+      "main": [
+        [
+          {
+            "node": "Set: lead brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge complaint": {
+      "main": [
+        [
+          {
+            "node": "Set: complain brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send complaint alert": {
+      "main": [
+        [
+          {
+            "node": "Merge complaint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: complain brief": {
+      "main": [
+        [
+          {
+            "node": "reply-in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "quote-in": {
+      "main": [
+        [
+          {
+            "node": "Read rates",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "wait for tables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read rates": {
+      "main": [
+        [
+          {
+            "node": "Read zones",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read zones": {
+      "main": [
+        [
+          {
+            "node": "Read surcharges",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read surcharges": {
+      "main": [
+        [
+          {
+            "node": "wait for tables",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "wait for tables": {
+      "main": [
+        [
+          {
+            "node": "Calculate quote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate quote": {
+      "main": [
+        [
+          {
+            "node": "reply-in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "nodeGroups": [],
+  "tags": []
+}

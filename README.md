@@ -4,6 +4,10 @@ My portfolio: **https://gray-tupas-portfolio.vercel.app**
 
 I'm Gray-Jan Tupas, an AI Automation & Operations Specialist. The site is an "automation canvas": n8n workflows, AI-assisted operational systems, my AI workspace, and a client website I built with an AI coding agent. Client names are left out on purpose.
 
+## n8n workflows
+
+The exported workflows behind the builds, with screenshots and write-ups, are in [`automations/`](automations/). Credentials, IDs, emails and client names have been removed.
+
 ## How it's built
 
 - Plain HTML, CSS and a little JavaScript. No framework, no build step.
