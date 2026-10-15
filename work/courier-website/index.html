@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case study: a courier company website, built with an AI coding agent | Gray-Jan Tupas</title>
+<meta name="description" content="How Gray-Jan Tupas built a courier company's website with Claude Code: scoping from meetings, holding back unready features, checkpoints and a decision log.">
+<link rel="canonical" href="https://gray-tupas-portfolio.vercel.app/work/courier-website/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Case study: a courier company website, built with an AI coding agent">
+<meta property="og:description" content="Scoping from meetings, holding back unready features, checkpoints and a decision log.">
+<meta property="og:url" content="https://gray-tupas-portfolio.vercel.app/work/courier-website/">
+<meta property="og:image" content="https://gray-tupas-portfolio.vercel.app/img/gray-jan-tupas.webp">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#183C2E">
+<link rel="preload" href="../../fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<svg class="defs" aria-hidden="true" focusable="false"><defs><g id="leaf"><path d="M0 0C12-17 40-15 56 0C40 15 12 17 0 0Z"/><path class="rib" d="M4 0H44"/></g></defs></svg>
+
+<header class="toolbar">
+  <div class="toolbar-in">
+    <a class="tb-id" href="../../">
+      <svg class="tb-leaf" viewBox="-2 -18 60 36" aria-hidden="true" focusable="false"><use href="#leaf"/></svg>
+      <b>gray-jan&nbsp;tupas</b><span>&nbsp;/ automation&nbsp;canvas</span>
+    </a>
+    <nav class="tb-nav" aria-label="Site">
+      <a href="../../#builds">builds</a>
+      <a href="../../#web">web</a>
+      <a href="../../#systems">systems</a>
+      <a href="../../#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero cs-hero">
+    <div class="wrap">
+      <div class="kicker">BUILD 09 · Case study</div>
+      <h1>Running a client website build with an AI coding agent</h1>
+      <p class="status-row"><span class="status">In progress: staging, not yet live</span></p>
+      <p class="hero-desc">A full website for a Singapore courier company. This page is about how I ran the build: scoping from meetings, holding back features that weren't ready, checkpoints, and a decision log.</p>
+      <dl class="cs-meta">
+        <div><dt>Client</dt><dd>Singapore courier company</dd></div>
+        <div><dt>My role</dt><dd>Design and build, solo</dd></div>
+        <div><dt>Coding agent</dt><dd>Claude Code</dd></div>
+        <div><dt>Output</dt><dd>Multi-page static site</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <article class="wrap cs">
+
+    <section>
+      <div class="kicker">01 · Problem</div>
+      <h2>Problem</h2>
+      <p>The requirements for this site came out of client meetings, not a written spec. An AI coding agent will build whatever it is told, including features nobody has decided on yet. I needed a way to turn each meeting into a small, checked piece of work.</p>
+    </section>
+
+    <section>
+      <div class="kicker">02 · My role</div>
+      <h2>My role</h2>
+      <p>I designed and built the full site solo, using Claude Code as my coding agent. I wrote every prompt, reviewed every build, and decided what was ready to go in.</p>
+    </section>
+
+    <section>
+      <div class="kicker">03 · How it works</div>
+      <h2>How it works</h2>
+      <p>Every change to the site went through the same five steps.</p>
+      <ol class="flow">
+        <li><span class="build-idx">STEP 01</span><b>Client meeting</b>The client says what they want and reacts to the current version.</li>
+        <li><span class="build-idx">STEP 02</span><b>Transcript</b>The meeting transcript is the source for the next piece of work.</li>
+        <li><span class="build-idx">STEP 03</span><b>Scoped Claude Code prompt</b>One prompt per piece of work, with checkpoints written into it.</li>
+        <li><span class="build-idx">STEP 04</span><b>Build</b>Claude Code builds up to the next checkpoint, then stops.</li>
+        <li><span class="build-idx">STEP 05</span><b>Review</b>I check the result before the next step starts.</li>
+      </ol>
+      <p>Two files carried the project between sessions. A <span class="mono">CLAUDE.md</span> file held the build rules, and a decision log kept the history.</p>
+      <p>This is what that process has produced so far, on staging.</p>
+      <figure class="shot">
+        <img src="../../screenshots/12-courier-services.webp" width="1440" height="1165" loading="lazy" alt="The 'Choose your delivery service' section: five service cards for Same-Day, Express, Night &amp; Weekend, Van and Direct, above a table that matches what the customer needs to the right service.">
+        <figcaption>Service cards and the service-picker table</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="../../screenshots/13-courier-how.webp" width="1440" height="635" loading="lazy" alt="The 'From request to doorstep' section: four numbered steps. Tell us what and when, we confirm price and pickup, a rider collects, delivered and confirmed.">
+        <figcaption>The 4-step "how it works"</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <div class="kicker">04 · Key decisions</div>
+      <h2>Key decisions</h2>
+      <ul>
+        <li><strong>Scope from the meeting.</strong> Each prompt was written from a meeting transcript, so the work matched what the client actually asked for.</li>
+        <li><strong>Hold back what isn't ready.</strong> Features still in development stay listed as in development. They are not presented as finished.</li>
+        <li><strong>Checkpoints in every prompt.</strong> The agent stops at set points so I can review before it continues.</li>
+        <li><strong>Rules and history live in files.</strong> <span class="mono">CLAUDE.md</span> holds the build rules. The decision log records what was decided and keeps the history.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="kicker">05 · Done vs in progress</div>
+      <h2>What's done vs in progress</h2>
+      <div class="cs-split">
+        <div class="ps">
+          <h3>Built so far</h3>
+          <ul>
+            <li>Home, quote &amp; booking, corporate accounts, 5 service pages, contact, privacy/terms/cookies.</li>
+            <li>Service-picker table matching needs to services.</li>
+            <li>Client logo wall.</li>
+            <li>Real Google reviews.</li>
+            <li>4-step "how it works".</li>
+            <li>Story timeline.</li>
+            <li>FAQ.</li>
+            <li>WhatsApp chat link.</li>
+            <li>Sticky mobile Call / Schedule a Pickup bar.</li>
+            <li>Skippable intro.</li>
+          </ul>
+        </div>
+        <div class="ps">
+          <h3>In development</h3>
+          <ul>
+            <li>Booking calendar with a server-enforced weekly cap (Monday–Sunday, Singapore time).</li>
+            <li>Tracking link in order emails.</li>
+            <li>Reminder email.</li>
+            <li>"Track a delivery" link.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker">06 · Limitations</div>
+      <h2>Limitations</h2>
+      <ul>
+        <li>The site is on staging. It is not live yet.</li>
+        <li>The booking calendar, tracking link, reminder email and "Track a delivery" link are still in development.</li>
+        <li>There are no results to report yet, because the site has not launched.</li>
+        <li>The client is not named here, so the screenshots leave out the site's header, logo and client logo wall.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="kicker">07 · Links</div>
+      <h2>Links</h2>
+      <ul>
+        <li>Also built for this client: <a href="../../#builds">BUILD 01, the live AI email triage workflow</a></li>
+        <li><a href="../../#web">Back to web and product builds</a></li>
+        <li><a href="../ai-workspace/">Case study: my AI workspace system</a></li>
+        <li><a href="../../#contact">Contact me</a></li>
+      </ul>
+    </section>
+
+  </article>
+</main>
+
+<footer class="foot">
+  Gray-Jan A. Tupas · AI Automation &amp; Operations · Built as a workflow canvas · 2026
+</footer>
+</body>
+</html>
