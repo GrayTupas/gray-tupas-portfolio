@@ -264,3 +264,35 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 .dg .m { font: 11.5px var(--mono); fill: var(--text); }
 .dg .on { fill: var(--accent-ink); }
 .dg .on2 { fill: var(--accent-ink); opacity: .75; }
+
+/* ============ HOME: INTRO (built by site.js, once per session, never with reduced motion) ============ */
+.intro-layer { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; background: var(--bg); transition: background-color .6s ease; }
+.intro-layer.leaving { background-color: transparent; pointer-events: none; }
+.intro-layer.leaving .intro-flow > :not(.i-me), .intro-layer.leaving .intro-skip { opacity: 0; transition: opacity .35s ease; }
+.intro-flow { display: flex; align-items: center; padding: 24px; }
+/* waiting nodes stay readable (muted text), they only light up when they run */
+.i-node { width: clamp(124px, 13vw, 168px); padding-bottom: 12px; color: var(--muted); transition: color .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.i-node b { display: block; padding: 10px 14px 0; font-size: .9rem; line-height: 1.3; }
+.i-node header span { white-space: nowrap; }
+.i-node header em { margin-left: auto; font-style: normal; color: var(--accent); opacity: 0; transition: opacity .2s ease; }
+.i-node.on { color: var(--text); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.i-me img { opacity: .35; transition: opacity .3s ease; }
+.i-me.on img { opacity: 1; }
+.i-node.on header em { opacity: 1; }
+.i-link { display: block; flex: none; width: clamp(20px, 3vw, 40px); height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .2s ease; }
+.i-link.on { transform: scaleX(1); }
+.i-me { margin: 0; padding: 0; overflow: hidden; transform-origin: 0 0; transition: transform .8s cubic-bezier(.16, 1, .3, 1), opacity .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.i-me img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 14%; }
+.intro-skip { position: absolute; right: 20px; bottom: 20px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: none; box-shadow: inset 0 0 0 1px var(--edge); color: var(--text-2); font: 500 .85rem var(--sans); cursor: pointer; }
+.intro-skip:hover { color: var(--text); box-shadow: inset 0 0 0 1px var(--text-2); }
+@media (max-width: 859px) {
+  .intro-flow { flex-direction: column; }
+  .i-node { width: 220px; }
+  .i-link { width: 2px; height: 20px; transform: scaleY(0); transform-origin: top; }
+  .i-link.on { transform: scaleY(1); }
+  .i-me { width: 184px; }
+}
+/* hold the hero's own entrance until the intro hands over; the photo arrives by gliding instead */
+html.intro .copy > *, html.intro .hero-flow .node { animation: none; }
+html.intro-moving .me { visibility: hidden; }
+.from-intro .copy > *, .from-intro .hero-flow .node { animation: none; }
