@@ -327,3 +327,15 @@ html.intro-moving .me, html.intro-moving .hero-flow .steps, html.intro-moving .h
 .me > header em { margin-left: auto; font-style: normal; color: var(--accent); }
 .step { transition: border-color .3s ease, box-shadow .3s ease; }
 .step.hit { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent), 0 0 28px rgba(63, 207, 142, .16); }
+
+/* ============ SCREENSHOT VIEWER (site.js, native <dialog>) ============ */
+.viewer { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 72px clamp(12px, 3vw, 40px) 24px; border: 0; background: rgba(9, 12, 10, .96); color: var(--text); cursor: zoom-out; }
+.viewer[open] { display: grid; place-items: center; animation: v-in .25s ease; }
+.viewer::backdrop { background: transparent; }
+.viewer figure { margin: 0; display: grid; gap: 12px; justify-items: center; max-width: 100%; }
+.viewer img { width: auto; max-width: 100%; max-height: calc(100dvh - 150px); object-fit: contain; border: 1px solid var(--edge); border-radius: var(--r); background: #111; cursor: default; }
+.viewer figcaption { font: .82rem var(--mono); color: var(--muted); text-align: center; }
+.viewer-close { position: fixed; top: 14px; right: 14px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--edge); color: var(--text); font: 600 .9rem var(--sans); cursor: pointer; }
+.viewer-close:hover { box-shadow: inset 0 0 0 1px var(--accent); }
+html:has(.viewer[open]) { overflow: hidden; }
+@keyframes v-in { from { opacity: 0; } }

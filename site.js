@@ -160,3 +160,29 @@
   }
   setTimeout(function () { cycle(); setInterval(cycle, 5000); }, 2500);
 })();
+
+// Screenshot viewer: image links open in a dialog over the page instead of leaving it.
+// Close with the button, Esc, or a click anywhere outside the picture. Ctrl/middle-click still opens a new tab.
+(function () {
+  var links = document.querySelectorAll('a[href$=".webp"]');
+  if (!links.length || !window.HTMLDialogElement) return; // without <dialog> the links just open the image
+  var dlg = document.createElement('dialog');
+  dlg.className = 'viewer';
+  dlg.setAttribute('aria-label', 'Screenshot');
+  dlg.innerHTML = '<button class="viewer-close" type="button">Close</button><figure><img alt=""><figcaption></figcaption></figure>';
+  document.body.appendChild(dlg);
+  var img = dlg.querySelector('img'), cap = dlg.querySelector('figcaption');
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      var thumb = a.querySelector('img'), card = a.closest('article'), title = card && card.querySelector('h3'), note = a.querySelector('span');
+      img.src = a.getAttribute('href');
+      img.alt = thumb ? thumb.alt : '';
+      cap.textContent = title ? title.textContent : (note ? note.textContent : '');
+      dlg.showModal();
+    });
+  });
+  dlg.addEventListener('click', function (e) { if (e.target !== img) dlg.close(); });
+  dlg.addEventListener('close', function () { if (!dlg.open) img.removeAttribute('src'); });
+})();
