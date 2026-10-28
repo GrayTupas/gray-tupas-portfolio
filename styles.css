@@ -266,32 +266,43 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 .dg .on2 { fill: var(--accent-ink); opacity: .75; }
 
 /* ============ HOME: INTRO (built by site.js, once per session, never with reduced motion) ============ */
-.intro-layer { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; background: var(--bg); transition: background-color .6s ease; }
-.intro-layer.leaving { background-color: transparent; pointer-events: none; }
-.intro-layer.leaving .intro-flow > :not(.i-me), .intro-layer.leaving .intro-skip { opacity: 0; transition: opacity .35s ease; }
-.intro-flow { display: flex; align-items: center; padding: 24px; }
-/* waiting nodes stay readable (muted text), they only light up when they run */
-.i-node { width: clamp(124px, 13vw, 168px); padding-bottom: 12px; color: var(--muted); transition: color .3s ease, border-color .3s ease, box-shadow .3s ease; }
-.i-node b { display: block; padding: 10px 14px 0; font-size: .9rem; line-height: 1.3; }
+.intro-layer { position: fixed; inset: 0; z-index: 30; overflow: hidden; background: radial-gradient(ellipse 60% 45% at 50% 50%, #142019, var(--bg) 70%); transition: opacity .6s ease; }
+.intro-layer.leaving { opacity: 0; pointer-events: none; }
+.intro-layer.leaving .i-me { opacity: 1; }
+/* progress of the execution, along the top edge */
+.i-progress { position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .4s ease; }
+/* the track holds the whole workflow; the "camera" is the track sliding so the newest node sits mid-screen */
+.intro-flow { position: absolute; left: 0; top: 50%; display: flex; align-items: center; transform: translate(var(--x, 0px), -50%); transition: transform .6s cubic-bezier(.65, 0, .35, 1); }
+.intro-flow.no-anim { transition: none; }
+/* nodes: pop up, pulse while running, light up when done. Waiting text stays readable (muted, not faded). */
+.i-node { flex: none; width: 200px; padding-bottom: 12px; color: var(--muted); opacity: 0; transform: scale(.6) translateY(8px); transition: opacity .2s ease, transform .5s cubic-bezier(.34, 1.56, .64, 1), color .3s ease, border-color .3s ease, box-shadow .3s ease; }
+.i-node.show { opacity: 1; transform: none; }
+.i-node b { display: block; padding: 10px 14px 0; font-size: .95rem; line-height: 1.3; }
 .i-node header span { white-space: nowrap; }
-.i-node header em { margin-left: auto; font-style: normal; color: var(--accent); opacity: 0; transition: opacity .2s ease; }
-.i-node.on { color: var(--text); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-.i-me img { opacity: .35; transition: opacity .3s ease; }
-.i-me.on img { opacity: 1; }
-.i-node.on header em { opacity: 1; }
-.i-link { display: block; flex: none; width: clamp(20px, 3vw, 40px); height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .2s ease; }
+.i-node header em { margin-left: auto; font-style: normal; color: var(--accent); }
+.i-node.run { color: var(--text); border-color: var(--accent); animation: i-pulse .7s ease-in-out infinite; }
+.i-node.on { color: var(--text); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent), 0 0 32px rgba(63, 207, 142, .18); }
+@keyframes i-pulse { 50% { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 6px rgba(63, 207, 142, .14); } }
+/* wires: draw, then a packet runs along them, with n8n's item count above */
+.i-link { position: relative; display: block; flex: none; width: 88px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
 .i-link.on { transform: scaleX(1); }
-.i-me { margin: 0; padding: 0; overflow: hidden; transform-origin: 0 0; transition: transform .8s cubic-bezier(.16, 1, .3, 1), opacity .3s ease, border-color .3s ease, box-shadow .3s ease; }
-.i-me img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 14%; }
+.i-link::after { content: ""; position: absolute; left: 0; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--text); opacity: 0; }
+.i-link.on::after { animation: i-packet .45s ease-in .1s both; }
+@keyframes i-packet { 0% { opacity: 1; transform: translateX(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(80px); } }
+.i-link span { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 500 .7rem/1 var(--mono); color: var(--muted); white-space: nowrap; opacity: 0; transition: opacity .3s ease .2s; }
+.i-link.on span { opacity: 1; }
+.i-me { margin: 0; padding: 0; overflow: hidden; }
+.i-me img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 14%; opacity: .35; filter: grayscale(1); transition: opacity .4s ease, filter .6s ease; }
+.i-me.on img { opacity: 1; filter: none; }
+.intro-layer.leaving .i-me { transform-origin: 0 0; transition: transform .8s cubic-bezier(.16, 1, .3, 1); }
+/* execution log, bottom left */
+.i-log { position: absolute; left: 20px; bottom: 20px; margin: 0; padding: 0; list-style: none; font: .78rem/1.7 var(--mono); color: var(--muted); }
+.i-log li { animation: i-line .25s ease both; }
+.i-log .ok::before { content: "\2713  "; color: var(--accent); }
+@keyframes i-line { from { opacity: 0; transform: translateY(6px); } }
 .intro-skip { position: absolute; right: 20px; bottom: 20px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 999px; background: none; box-shadow: inset 0 0 0 1px var(--edge); color: var(--text-2); font: 500 .85rem var(--sans); cursor: pointer; }
 .intro-skip:hover { color: var(--text); box-shadow: inset 0 0 0 1px var(--text-2); }
-@media (max-width: 859px) {
-  .intro-flow { flex-direction: column; }
-  .i-node { width: 220px; }
-  .i-link { width: 2px; height: 20px; transform: scaleY(0); transform-origin: top; }
-  .i-link.on { transform: scaleY(1); }
-  .i-me { width: 184px; }
-}
+@media (max-width: 559px) { .i-node { width: 184px; } .i-link { width: 56px; } @keyframes i-packet { 0% { opacity: 1; transform: translateX(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(48px); } } .i-log { bottom: 76px; } }
 /* hold the hero's own entrance until the intro hands over; the photo arrives by gliding instead */
 html.intro .copy > *, html.intro .hero-flow .node { animation: none; }
 html.intro-moving .me { visibility: hidden; }
