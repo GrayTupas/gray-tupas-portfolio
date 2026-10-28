@@ -66,12 +66,14 @@
     // only glide when the hero photo is on screen (on phones it sits below the fold)
     move = move && r2.top < innerHeight && r2.bottom > 0;
     layer.classList.add('leaving');
+    if (!move) layer.classList.add('fade');
     if (move) {
       root.classList.add('intro-moving', 'from-intro');
       pic.style.transform = 'translate(' + (r2.left - r1.left) + 'px,' + (r2.top - r1.top) + 'px) scale(' + (r2.width / r1.width) + ')';
     }
     root.classList.remove('intro');
-    setTimeout(function () { layer.remove(); root.classList.remove('intro-moving'); }, move ? 850 : 450);
+    // once the photo has landed, the hero's wires draw and its three rule nodes pop in
+    setTimeout(function () { layer.remove(); root.classList.remove('intro-moving'); if (move) root.classList.add('intro-landed'); }, move ? 850 : 450);
   }
   layer.querySelector('.intro-skip').addEventListener('click', function () { finish(false); });
   at(end, function () { finish(true); });
@@ -94,7 +96,7 @@
       var x1 = A.right - b.left, y1 = A.top + A.height / 2 - b.top;
       var x2 = C.left - b.left, y2 = C.top + C.height / 2 - b.top;
       var dx = Math.max(24, (x2 - x1) / 2);
-      return '<path d="M' + x1 + ' ' + y1 + 'C' + (x1 + dx) + ' ' + y1 + ' ' + (x2 - dx) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>' +
+      return '<path' + (box.classList.contains('hero-flow') ? ' pathLength="1"' : '') + ' d="M' + x1 + ' ' + y1 + 'C' + (x1 + dx) + ' ' + y1 + ' ' + (x2 - dx) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>' +
              '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5"/>';
     }).join('');
   }

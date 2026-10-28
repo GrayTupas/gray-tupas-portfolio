@@ -266,9 +266,12 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 .dg .on2 { fill: var(--accent-ink); opacity: .75; }
 
 /* ============ HOME: INTRO (built by site.js, once per session, never with reduced motion) ============ */
-.intro-layer { position: fixed; inset: 0; z-index: 30; overflow: hidden; background: radial-gradient(ellipse 60% 45% at 50% 50%, #142019, var(--bg) 70%); transition: opacity .6s ease; }
-.intro-layer.leaving { opacity: 0; pointer-events: none; }
-.intro-layer.leaving .i-me { opacity: 1; }
+.intro-layer { position: fixed; inset: 0; z-index: 30; overflow: hidden; }
+.intro-layer::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 45% at 50% 50%, #142019, var(--bg) 70%); transition: opacity .6s ease; }
+.intro-layer.leaving { pointer-events: none; }
+/* on hand-over everything fades except the photo, which stays solid while it glides into the hero */
+.intro-layer.leaving::before, .intro-layer.leaving .intro-flow > :not(.i-me), .intro-layer.leaving .i-log, .intro-layer.leaving .i-progress, .intro-layer.leaving .intro-skip { opacity: 0; transition: opacity .4s ease; }
+.intro-layer.leaving.fade .i-me { opacity: 0; transition: opacity .4s ease; }
 /* progress of the execution, along the top edge */
 .i-progress { position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .4s ease; }
 /* the track holds the whole workflow; the "camera" is the track sliding so the newest node sits mid-screen */
@@ -305,5 +308,15 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 @media (max-width: 559px) { .i-node { width: 184px; } .i-link { width: 56px; } @keyframes i-packet { 0% { opacity: 1; transform: translateX(0); } 90% { opacity: 1; } 100% { opacity: 0; transform: translateX(48px); } } .i-log { bottom: 76px; } }
 /* hold the hero's own entrance until the intro hands over; the photo arrives by gliding instead */
 html.intro .copy > *, html.intro .hero-flow .node { animation: none; }
-html.intro-moving .me { visibility: hidden; }
+html.intro-moving .me, html.intro-moving .hero-flow .steps, html.intro-moving .hero-flow .wires { visibility: hidden; }
 .from-intro .copy > *, .from-intro .hero-flow .node { animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .intro-landed .hero-flow .wires path { stroke-dasharray: 1; animation: i-draw .5s ease both; }
+  .intro-landed .hero-flow .wires circle { animation: i-fade .3s ease .4s both; }
+  .intro-landed .hero-flow .step { animation: rise .6s cubic-bezier(.16, 1, .3, 1) both; }
+  .intro-landed .hero-flow .step:nth-child(1) { animation-delay: .3s; }
+  .intro-landed .hero-flow .step:nth-child(2) { animation-delay: .42s; }
+  .intro-landed .hero-flow .step:nth-child(3) { animation-delay: .54s; }
+  @keyframes i-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes i-fade { from { opacity: 0; } }
+}
