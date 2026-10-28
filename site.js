@@ -73,7 +73,7 @@
     }
     root.classList.remove('intro');
     // once the photo has landed, the hero's wires draw and its three rule nodes pop in
-    setTimeout(function () { layer.remove(); root.classList.remove('intro-moving'); if (move) root.classList.add('intro-landed'); }, move ? 850 : 450);
+    setTimeout(function () { layer.remove(); root.classList.remove('intro-moving'); if (move) { root.classList.add('intro-landed'); setTimeout(function () { root.classList.remove('intro-landed'); }, 1500); } }, move ? 850 : 450);
   }
   layer.querySelector('.intro-skip').addEventListener('click', function () { finish(false); });
   at(end, function () { finish(true); });
@@ -135,19 +135,20 @@
 (function () {
   var flow = document.querySelector('.hero-flow'), root = document.documentElement;
   if (!flow || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var steps = flow.querySelectorAll('.step'), status = document.createElement('em');
+  var steps = flow.querySelectorAll('.step'), me = flow.querySelector('.me'), status = document.createElement('em');
   flow.querySelector('.me header').appendChild(status);
   var onScreen = true;
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; }).observe(flow);
   function hit(i, last) {
     steps[i].classList.add('hit');
     setTimeout(function () { steps[i].classList.remove('hit'); }, 900);
-    if (last) status.textContent = 'done';
+    if (last) { status.textContent = 'done'; me.classList.remove('run'); }
   }
   function cycle() {
     if (!onScreen || document.hidden || root.classList.contains('intro') || root.classList.contains('intro-moving')) return;
     var packets = flow.querySelectorAll('.wires .pkt');
     status.textContent = 'running';
+    me.classList.add('run');
     steps.forEach(function (s, i) {
       var p = packets[i], last = i === steps.length - 1;
       setTimeout(function () {
@@ -158,7 +159,7 @@
       }, i * 450);
     });
   }
-  setTimeout(function () { cycle(); setInterval(cycle, 5000); }, 2500);
+  setTimeout(function () { cycle(); setInterval(cycle, 4000); }, 2000);
 })();
 
 // Screenshot viewer: image links open in a dialog over the page instead of leaving it.
