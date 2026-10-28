@@ -27,3 +27,20 @@
     draw(box);
   });
 })();
+
+// Marks the nav link of the section in the middle of the screen.
+(function () {
+  var links = document.querySelectorAll('.nav nav a[href^="#"]');
+  if (!links.length || !('IntersectionObserver' in window)) return;
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.classList.remove('active'); a.removeAttribute('aria-current'); });
+      var a = byId[e.target.id];
+      if (a) { a.classList.add('active'); a.setAttribute('aria-current', 'true'); }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(byId).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+})();
