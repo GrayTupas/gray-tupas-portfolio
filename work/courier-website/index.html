@@ -12,35 +12,28 @@
 <meta property="og:url" content="https://gray-tupas-portfolio.vercel.app/work/courier-website/">
 <meta property="og:image" content="https://gray-tupas-portfolio.vercel.app/img/gray-jan-tupas.webp">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#183C2E">
-<link rel="preload" href="../../fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../../fonts/source-serif-4.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0D110F">
+<link rel="preload" href="../../fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../../fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<svg class="defs" aria-hidden="true" focusable="false"><defs><g id="leaf"><path d="M0 0C12-17 40-15 56 0C40 15 12 17 0 0Z"/><path class="rib" d="M4 0H44"/></g></defs></svg>
 
-<header class="toolbar">
-  <div class="toolbar-in">
-    <a class="tb-id" href="../../">
-      <svg class="tb-leaf" viewBox="-2 -18 60 36" aria-hidden="true" focusable="false"><use href="#leaf"/></svg>
-      <b>gray-jan&nbsp;tupas</b><span>&nbsp;/ automation&nbsp;canvas</span>
-    </a>
-    <nav class="tb-nav" aria-label="Site">
-      <a href="../../#builds">builds</a>
-      <a href="../../#web">web</a>
-      <a href="../../#systems">systems</a>
-      <a href="../../#contact">contact</a>
+<header class="nav">
+  <div class="in">
+    <a class="brand" href="../../">gray-jan tupas</a>
+    <nav aria-label="Site">
+      <a href="../../#work">Work</a><a href="../../#case-studies">Case studies</a><a href="../../#systems">Systems</a><a href="../../#contact">Contact</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-  <div class="hero cs-hero">
-    <div class="wrap">
-      <div class="kicker">BUILD 09 · Case study</div>
+  <div class="cs-hero">
+    <div class="in">
+      <p class="eyebrow">BUILD 09 · Case study</p>
       <h1>Running a client website build with an AI coding agent</h1>
       <p class="status-row"><span class="status">In progress: staging, not yet live</span></p>
       <p class="hero-desc">A full website for a Singapore courier company. This page is about how I ran the build: scoping from meetings, holding back features that weren't ready, checkpoints, and a decision log.</p>
@@ -53,30 +46,27 @@
     </div>
   </div>
 
-  <article class="wrap cs">
+  <article class="in cs">
 
     <section>
-      <div class="kicker">01 · Problem</div>
       <h2>Problem</h2>
       <p>The requirements for this site came out of client meetings, not a written spec. An AI coding agent will build whatever it is told, including features nobody has decided on yet. I needed a way to turn each meeting into a small, checked piece of work.</p>
     </section>
 
     <section>
-      <div class="kicker">02 · My role</div>
       <h2>My role</h2>
       <p>I designed and built the full site solo, using Claude Code as my coding agent. I wrote every prompt, reviewed every build, and decided what was ready to go in.</p>
     </section>
 
     <section>
-      <div class="kicker">03 · How it works</div>
       <h2>How it works</h2>
       <p>Every change to the site went through the same five steps.</p>
-      <ol class="flow">
-        <li><span class="build-idx">STEP 01</span><b>Client meeting</b>The client says what they want and reacts to the current version.</li>
-        <li><span class="build-idx">STEP 02</span><b>Transcript</b>The meeting transcript is the source for the next piece of work.</li>
-        <li><span class="build-idx">STEP 03</span><b>Scoped Claude Code prompt</b>One prompt per piece of work, with checkpoints written into it.</li>
-        <li><span class="build-idx">STEP 04</span><b>Build</b>Claude Code builds up to the next checkpoint, then stops.</li>
-        <li><span class="build-idx">STEP 05</span><b>Review</b>I check the result before the next step starts.</li>
+      <ol class="process">
+        <li><b>Client meeting</b>The client says what they want and reacts to the current version.</li>
+        <li><b>Transcript</b>The meeting transcript is the source for the next piece of work.</li>
+        <li><b>Scoped Claude Code prompt</b>One prompt per piece of work, with checkpoints written into it.</li>
+        <li><b>Build</b>Claude Code builds up to the next checkpoint, then stops.</li>
+        <li><b>Review</b>I check the result before the next step starts.</li>
       </ol>
       <p>Two files carried the project between sessions. A <span class="mono">CLAUDE.md</span> file held the build rules, and a decision log kept the history.</p>
       <p>This is what that process has produced so far, on staging.</p>
@@ -91,7 +81,6 @@
     </section>
 
     <section>
-      <div class="kicker">04 · Key decisions</div>
       <h2>Key decisions</h2>
       <ul>
         <li><strong>Scope from the meeting.</strong> Each prompt was written from a meeting transcript, so the work matched what the client actually asked for.</li>
@@ -102,7 +91,6 @@
     </section>
 
     <section>
-      <div class="kicker">05 · Done vs in progress</div>
       <h2>What's done vs in progress</h2>
       <div class="cs-split">
         <div class="ps">
@@ -133,7 +121,6 @@
     </section>
 
     <section>
-      <div class="kicker">06 · Limitations</div>
       <h2>Limitations</h2>
       <ul>
         <li>The site is on staging. It is not live yet.</li>
@@ -144,7 +131,6 @@
     </section>
 
     <section>
-      <div class="kicker">07 · Links</div>
       <h2>Links</h2>
       <ul>
         <li>Also built for this client: <a href="../../#builds">BUILD 01, the live AI email triage workflow</a></li>
@@ -157,8 +143,6 @@
   </article>
 </main>
 
-<footer class="foot">
-  Gray-Jan A. Tupas · AI Automation &amp; Operations · Built as a workflow canvas · 2026
-</footer>
+<footer class="foot"><div class="in">Gray-Jan A. Tupas · AI Automation &amp; Operations · 2026</div></footer>
 </body>
 </html>
