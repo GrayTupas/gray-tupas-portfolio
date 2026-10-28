@@ -96,7 +96,11 @@
       var x1 = A.right - b.left, y1 = A.top + A.height / 2 - b.top;
       var x2 = C.left - b.left, y2 = C.top + C.height / 2 - b.top;
       var dx = Math.max(24, (x2 - x1) / 2);
-      return '<path' + (box.classList.contains('hero-flow') ? ' pathLength="1"' : '') + ' d="M' + x1 + ' ' + y1 + 'C' + (x1 + dx) + ' ' + y1 + ' ' + (x2 - dx) + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>' +
+      var d = 'M' + x1 + ' ' + y1 + 'C' + (x1 + dx) + ' ' + y1 + ' ' + (x2 - dx) + ' ' + y2 + ' ' + x2 + ' ' + y2;
+      var hero = box.classList.contains('hero-flow');
+      // hero wires can be drawn on (pathLength) and carry a packet the hero loop sends down them
+      return '<path' + (hero ? ' pathLength="1"' : '') + ' d="' + d + '"/>' +
+             (hero ? '<circle class="pkt" r="4"><animateMotion begin="indefinite" dur="1s" path="' + d + '"/></circle>' : '') +
              '<circle cx="' + x2 + '" cy="' + y2 + '" r="3.5"/>';
     }).join('');
   }
@@ -124,4 +128,35 @@
     });
   }, { rootMargin: '-45% 0px -50% 0px' });
   Object.keys(byId).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+})();
+
+// The hero keeps running: every few seconds the portrait node runs again, a packet goes down each wire
+// and the rule node it reaches lights up. On phones (no wires) the rule nodes light up in turn.
+(function () {
+  var flow = document.querySelector('.hero-flow'), root = document.documentElement;
+  if (!flow || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var steps = flow.querySelectorAll('.step'), status = document.createElement('em');
+  flow.querySelector('.me header').appendChild(status);
+  var onScreen = true;
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; }).observe(flow);
+  function hit(i, last) {
+    steps[i].classList.add('hit');
+    setTimeout(function () { steps[i].classList.remove('hit'); }, 900);
+    if (last) status.textContent = 'done';
+  }
+  function cycle() {
+    if (!onScreen || document.hidden || root.classList.contains('intro') || root.classList.contains('intro-moving')) return;
+    var packets = flow.querySelectorAll('.wires .pkt');
+    status.textContent = 'running';
+    steps.forEach(function (s, i) {
+      var p = packets[i], last = i === steps.length - 1;
+      setTimeout(function () {
+        if (!p) return hit(i, last);
+        p.classList.add('go');
+        p.querySelector('animateMotion').beginElement();
+        setTimeout(function () { p.classList.remove('go'); hit(i, last); }, 1000);
+      }, i * 450);
+    });
+  }
+  setTimeout(function () { cycle(); setInterval(cycle, 5000); }, 2500);
 })();

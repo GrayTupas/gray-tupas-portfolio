@@ -320,3 +320,10 @@ html.intro-moving .me, html.intro-moving .hero-flow .steps, html.intro-moving .h
   @keyframes i-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
   @keyframes i-fade { from { opacity: 0; } }
 }
+
+/* ============ HOME: HERO LOOP (site.js; off under reduced motion) ============ */
+.wires .pkt { fill: var(--text); opacity: 0; transition: opacity .15s ease; }
+.wires .pkt.go { opacity: 1; }
+.me > header em { margin-left: auto; font-style: normal; color: var(--accent); }
+.step { transition: border-color .3s ease, box-shadow .3s ease; }
+.step.hit { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent), 0 0 28px rgba(63, 207, 142, .16); }
