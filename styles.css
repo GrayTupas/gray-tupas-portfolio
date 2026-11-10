@@ -109,16 +109,34 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 20; pointer-event
 .pains h3 { font-size: 1.15rem; }
 .pains p { margin-top: 8px; color: var(--text-2); }
 .bridge { margin-top: 32px; }
+.fix { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; font-size: .92rem; font-weight: 600; color: var(--accent); text-underline-offset: 3px; }
+.fix::after { content: " \2193"; white-space: pre; }
+
+/* ============ HOME: STEPS (kicker labels + side wire; site.js lights the wire) ============ */
+.kicker { margin: 0 0 12px; font: 500 .8rem/1 var(--mono); letter-spacing: .02em; color: var(--accent); }
+.rail { display: none; }
+@media (min-width: 1280px) {
+  .rail { display: flex; flex-direction: column; gap: 24px; position: fixed; left: 16px; top: 50%; transform: translateY(-50%); z-index: 5; }
+  .rail::before, .rail::after { content: ""; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; background: var(--edge); }
+  .rail::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--p, 0)); transition: transform .5s cubic-bezier(.16, 1, .3, 1); }
+  .rail a { position: relative; z-index: 1; display: grid; place-items: center; width: 44px; height: 44px; text-decoration: none; }
+  .rail a::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--edge); transition: border-color .3s ease, background-color .3s ease; }
+  .rail a.done::before, .rail a.on::before { border-color: var(--accent); }
+  .rail a.on::before { background: var(--accent); }
+  .rail span { position: absolute; left: 46px; white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--panel); border: 1px solid var(--edge); font: 500 .76rem/1 var(--mono); color: var(--text-2); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+  .rail a:hover span, .rail a:focus-visible span { opacity: 1; }
+}
 
 /* ============ HOME: FACTS ============ */
 .facts { padding: 36px 0; }
 .facts .in { display: grid; gap: 28px; }
-@media (min-width: 860px) { .facts .in { grid-template-columns: 1.3fr 1fr; align-items: center; } }
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; margin: 0; }
 .stats div { display: flex; flex-direction: column; }
 .stats dd { order: -1; margin: 0; font: 500 2rem/1 var(--mono); letter-spacing: -0.02em; }
 .stats dt { margin-top: 8px; max-width: 30ch; font-size: .85rem; color: var(--muted); }
-.now h2 { font-size: .95rem; letter-spacing: 0; }
+@media (min-width: 860px) { .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.xp .now { margin-top: 28px; }
+.now h3 { font-size: .95rem; letter-spacing: 0; }
 .now ul { margin: 8px 0 0; padding-left: 18px; color: var(--text-2); font-size: .95rem; }
 .now li::marker { color: var(--accent); }
 
@@ -152,6 +170,10 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 20; pointer-event
 @media (min-width: 700px) { .grid { grid-template-columns: repeat(2, 1fr); } .grid > :last-child { grid-column: 1 / -1; } }
 @media (min-width: 1020px) { .grid { grid-template-columns: repeat(3, 1fr); } .grid > :first-child, .grid > :last-child { grid-column: span 2; } }
 .card { display: flex; flex-direction: column; overflow: hidden; transition: border-color .2s ease, transform .3s cubic-bezier(.16, 1, .3, 1); }
+.grid.collapsed > :nth-child(n+4) { display: none; }
+@media (min-width: 700px) { .grid.collapsed > :nth-child(3) { grid-column: 1 / -1; } }
+@media (min-width: 1020px) { .grid.collapsed > :nth-child(n) { grid-column: auto; } }
+.show-more { margin-top: 24px; }
 .card:hover { border-color: #3A4840; transform: translateY(-2px); }
 .thumb { display: block; aspect-ratio: 16 / 9; background: #111; }
 .thumb img { width: 100%; height: 100%; object-fit: contain; }
@@ -195,7 +217,7 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 
 /* ============ HOME: APPROACH, STACK, EXPERIENCE, CONTACT ============ */
 .approach .in { display: grid; gap: 32px; }
-@media (min-width: 860px) { .approach .in { grid-template-columns: 1fr 2fr; gap: 64px; } .approach h2 { position: sticky; top: 100px; align-self: start; } }
+@media (min-width: 860px) { .approach .in { grid-template-columns: 1fr 2fr; gap: 64px; } .approach .head { position: sticky; top: 100px; align-self: start; } }
 .approach ol { list-style: none; margin: 0; padding: 0; counter-reset: rule; display: grid; gap: 32px; }
 .approach li { counter-increment: rule; display: grid; grid-template-columns: 48px 1fr; gap: 4px 16px; }
 .approach li::before { content: counter(rule); grid-row: span 2; font: 500 1.6rem/1.2 var(--mono); color: var(--accent); }

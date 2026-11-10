@@ -128,6 +128,44 @@
     });
   }, { rootMargin: '-45% 0px -50% 0px' });
   Object.keys(byId).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+  document.querySelectorAll('.hero, #problem').forEach(function (s) { io.observe(s); }); // above the first nav section: clear the mark
+})();
+
+// Shows the first three builds with a "Show N more" button. Without JS all seven stay visible.
+(function () {
+  var grid = document.getElementById('build-grid');
+  if (!grid || grid.children.length < 5) return;
+  var extra = grid.children.length - 3, btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'btn ghost show-more'; btn.setAttribute('aria-controls', 'build-grid');
+  function set(open) {
+    grid.classList.toggle('collapsed', !open);
+    btn.setAttribute('aria-expanded', open);
+    btn.textContent = open ? 'Show fewer' : 'Show ' + extra + ' more';
+  }
+  btn.addEventListener('click', function () {
+    var open = grid.classList.contains('collapsed');
+    set(open);
+    if (!open) btn.scrollIntoView({ block: 'nearest' });
+  });
+  grid.after(btn);
+  set(false);
+})();
+
+// Side wire of steps: the dot of the step in the middle of the screen fills, earlier ones stay lit, the wire grows to it.
+(function () {
+  var rail = document.querySelector('.rail');
+  if (!rail || !('IntersectionObserver' in window)) return;
+  var links = [].slice.call(rail.querySelectorAll('a'));
+  var targets = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var at = targets.indexOf(e.target);
+      links.forEach(function (a, i) { a.classList.toggle('done', i < at); a.classList.toggle('on', i === at); if (i === at) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current'); });
+      rail.style.setProperty('--p', at / (links.length - 1));
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  targets.forEach(function (t) { if (t) io.observe(t); });
 })();
 
 // The hero keeps running: every few seconds the portrait node runs again, a packet goes down each wire

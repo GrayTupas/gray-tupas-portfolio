@@ -31,6 +31,8 @@
   </div>
 </header>
 
+<nav class="rail" aria-label="Steps on this page"><a href="#problem"><span>the problem</span></a><a href="#proof"><span>the proof</span></a><a href="#about"><span>who you'd work with</span></a><a href="#approach"><span>the promise</span></a><a href="#contact"><span>your next step</span></a></nav>
+
 <main id="main">
   <section class="hero">
     <div class="in">
@@ -54,24 +56,26 @@
     </div>
   </section>
 
-  <section class="pain" aria-labelledby="pain-h">
+  <section class="pain" id="problem" aria-labelledby="pain-h">
     <div class="in">
+      <p class="kicker">the problem</p>
       <h2 id="pain-h">Your team is busy with work a system could do</h2>
       <p class="sub">It's rarely hard work. It just never ends, and it lands on the people you need for everything else.</p>
       <ul class="pains">
-        <li class="node"><header><span>inbox · 5&ndash;6 hrs to reply</span></header><div class="body"><h3>Customers wait hours for an answer</h3><p>At one courier company, emails sat 5 to 6 hours, sometimes a full day. Every hour a quote goes unanswered, the customer can ask someone else.</p></div></li>
-        <li class="node"><header><span>crm · same lead, twice</span></header><div class="body"><h3>The same lead gets entered twice</h3><p>Then two people chase one person, or each thinks the other did and nobody does.</p></div></li>
-        <li class="node"><header><span>reports · by hand</span></header><div class="body"><h3>Reports eat the end of every week</h3><p>Someone copies numbers between sheets, docs and chats to say what happened, instead of doing the next thing.</p></div></li>
-        <li class="node"><header><span>know-how · one person</span></header><div class="body"><h3>It all lives in one person's head</h3><p>When they're sick or busy, the work stops, and new people learn it by asking around.</p></div></li>
+        <li class="node"><header><span>inbox · 5&ndash;6 hrs to reply</span></header><div class="body"><h3>Customers wait hours for an answer</h3><p>At one courier company, emails sat 5 to 6 hours, sometimes a full day. Every hour a quote goes unanswered, the customer can ask someone else.</p><a class="fix" href="#work">See the fix: the email assistant</a></div></li>
+        <li class="node"><header><span>crm · same lead, twice</span></header><div class="body"><h3>The same lead gets entered twice</h3><p>Then two people chase one person, or each thinks the other did and nobody does.</p><a class="fix" href="#fix-leads">See the fix: lead clean-up</a></div></li>
+        <li class="node"><header><span>reports · by hand</span></header><div class="body"><h3>Reports eat the end of every week</h3><p>Someone copies numbers between sheets, docs and chats to say what happened, instead of doing the next thing.</p><a class="fix" href="#fix-reports">See the fix: the reporting assistant</a></div></li>
+        <li class="node"><header><span>know-how · one person</span></header><div class="body"><h3>It all lives in one person's head</h3><p>When they're sick or busy, the work stops, and new people learn it by asking around.</p><a class="fix" href="#fix-guides">See the fix: the guides I wrote</a></div></li>
       </ul>
       <p class="sub bridge">Here's what fixing it has looked like so far.</p>
     </div>
   </section>
 
+  <div class="chapter" id="proof">
   <section class="facts" aria-label="Results so far">
     <div class="in">
+      <p class="kicker">the proof</p>
       <dl class="stats"><div><dt>More booked sales calls a week (about 2 to 3, up to 13 to 15)</dt><dd>5x</dd></div><div><dt>Reply time my email assistant is built for (was 5 to 6 hours)</dt><dd>1&ndash;5 min</dd></div><div><dt>Source in Google's AI answer for a client's main search, days after launch</dt><dd>#1</dd></div><div><dt>Of guides and SOPs, so the team can run things without me</dt><dd>37pp</dd></div></dl>
-      <div class="now"><h2>Now building</h2><ul><li>Feature work on a courier client's website</li><li>Expanding the AI workspace</li><li>AI-Powered Product Development studies at MMDC</li></ul></div>
     </div>
   </section>
 
@@ -99,8 +103,8 @@
     <div class="in">
       <h2 id="more-builds">More things I've automated</h2>
       <p class="sub">Seven more, from cleaning up messy lead lists to posting on social media for you. Click any picture to see the whole workflow.</p>
-      <div class="grid">
-        <article class="node card">
+      <div class="grid" id="build-grid">
+        <article class="node card" id="fix-leads">
           <header><span>BUILD 02</span></header>
           <a class="thumb" href="screenshots/01-crm-lead-dedup.webp"><img src="screenshots/01-crm-lead-dedup.webp" width="1292" height="768" loading="lazy" alt="n8n canvas: New Lead Arrives triggers cleaning and validation, which splits to a manual review queue or to duplicate lookups against the qualified and unqualified sheets, then branches through qualification into CRM writes, sheet updates and Gmail notifications."></a>
           <div class="body">
@@ -296,7 +300,7 @@
           <a class="shot" href="screenshots/06-meeting-chat.webp"><img src="screenshots/06-meeting-chat.webp" width="1496" height="745" loading="lazy" alt="Screenshot of the assistant answering the question 'What do you do?' It explains that it turns supplied meeting transcripts and status updates into organised records, summaries, action items, decisions, owners, dependencies and prioritised daily work lists, and that the operator retains control over priorities, deadlines, ownership, completion confirmation, approvals and external communication."></a>
           <div class="body"><h3>Meeting-to-Execution Operations System</h3><p>Converts a meeting transcript into a cleaned, speaker-separated record, structured action items with owners and due dates, decisions, dependencies, and a prioritised list of what actually has to happen today.</p><p class="boundary"><b>Boundary.</b> Human-initiated. The Fireflies-to-n8n ingestion path is a tested prototype; the AI node ran on mocked structured output under credit limits, and writeback is prompted, not unattended.</p></div>
         </article>
-        <article class="node cell c2">
+        <article class="node cell c2" id="fix-reports">
           <a class="shot" href="screenshots/07-reporting-chat.webp"><img src="screenshots/07-reporting-chat.webp" width="1385" height="790" loading="lazy" alt="Screenshot of the assistant answering 'What do you do?' It explains that it turns the operator's plain-language work updates into structured daily reports, weekly summaries and concise executive messages, organises tasks by status, preserves only the facts provided and avoids inventing metrics, blockers or outcomes, while the operator decides what is accurate and manually sends each final message."></a>
           <div class="body"><h3>Daily &amp; Weekly Reporting Workflow</h3><p>Turns a short list of plain-language work notes into a structured daily report, a weekly consolidation, and a messaging-ready executive summary.</p><p class="boundary"><b>Boundary.</b> User-triggered and human-reviewed. Messages are drafted, never sent automatically. Used across repeated daily and weekly reporting cycles.</p></div>
         </article>
@@ -312,26 +316,16 @@
     </div>
   </section>
 
-  <section id="approach" class="approach">
-    <div class="in">
-      <h2>What I promise</h2>
-      <ol><li><h3>I learn how you work first</h3><p>A lot of what looks like an automation problem is really a process nobody has written down. I map how the work happens today, who does it and where it goes wrong, then we decide together what's worth automating.</p></li><li><h3>A person approves anything important</h3><p>AI drafts, sorts and summarises. You or your team approve anything that sends an email, changes who owns a task or closes it. I tell you exactly where that line sits.</p></li><li><h3>Tested before you rely on it</h3><p>I test each step on its own, write down what broke and how I fixed it, and leave you a short guide, so your team can keep it running.</p></li></ol>
-    </div>
-  </section>
+  </div>
 
-  <section class="stack" aria-labelledby="stack-h">
-    <div class="in">
-      <h2 id="stack-h">Tools I work with</h2>
-      <ul class="logos"><li><img src="img/logos/n8n.svg" width="34" height="34" alt="n8n" title="n8n" loading="lazy"></li><li><img src="img/logos/claude.svg" width="34" height="34" alt="Claude" title="Claude" loading="lazy"></li><li><img src="img/logos/googlegemini.svg" width="34" height="34" alt="Google Gemini" title="Google Gemini" loading="lazy"></li><li><img src="img/logos/googlesheets.svg" width="34" height="34" alt="Google Sheets" title="Google Sheets" loading="lazy"></li><li><img src="img/logos/googledocs.svg" width="34" height="34" alt="Google Docs" title="Google Docs" loading="lazy"></li><li><img src="img/logos/googledrive.svg" width="34" height="34" alt="Google Drive" title="Google Drive" loading="lazy"></li><li><img src="img/logos/gmail.svg" width="34" height="34" alt="Gmail" title="Gmail" loading="lazy"></li><li><img src="img/logos/hubspot.svg" width="34" height="34" alt="HubSpot" title="HubSpot" loading="lazy"></li><li><img src="img/logos/telegram.svg" width="34" height="34" alt="Telegram" title="Telegram" loading="lazy"></li><li><img src="img/logos/whatsapp.svg" width="34" height="34" alt="WhatsApp" title="WhatsApp" loading="lazy"></li><li><img src="img/logos/discord.svg" width="34" height="34" alt="Discord" title="Discord" loading="lazy"></li><li><img src="img/logos/x.svg" width="34" height="34" alt="X" title="X" loading="lazy"></li><li><img src="img/logos/facebook.svg" width="34" height="34" alt="Facebook" title="Facebook" loading="lazy"></li><li><img src="img/logos/instagram.svg" width="34" height="34" alt="Instagram" title="Instagram" loading="lazy"></li><li><img src="img/logos/javascript.svg" width="34" height="34" alt="JavaScript" title="JavaScript" loading="lazy"></li><li><img src="img/logos/docker.svg" width="34" height="34" alt="Docker" title="Docker" loading="lazy"></li><li><img src="img/logos/vercel.svg" width="34" height="34" alt="Vercel" title="Vercel" loading="lazy"></li><li><img src="img/logos/figma.svg" width="34" height="34" alt="Figma" title="Figma" loading="lazy"></li><li><img src="img/logos/davinciresolve.svg" width="34" height="34" alt="DaVinci Resolve" title="DaVinci Resolve" loading="lazy"></li></ul>
-      <p class="sub">I build on the tools you already use, so your team has nothing new to learn. Also OpenAI, Apollo, Microsoft Outlook, Canva, CapCut and LinkedIn.</p>
-    </div>
-  </section>
-
+  <div class="chapter" id="about">
   <section id="experience" class="xp">
     <div class="in">
+      <p class="kicker">who you'd work with</p>
       <h2>Experience</h2>
+      <div class="now"><h3>Now building</h3><ul><li>Feature work on a courier client's website</li><li>Expanding the AI workspace</li><li>AI-Powered Product Development studies at MMDC</li></ul></div>
       <ol>
-        <li>
+        <li id="fix-guides">
           <p class="when">2026 to Oct 2026</p>
           <div><h3>Operations &amp; Automation Specialist <span class="note">(Executive Assistant)</span></h3><p class="org">Live Digital Box</p><ul>
               <li>Worked directly with the founder of a remote multi-brand media business, turning priorities, meetings and half-formed ideas into scoped projects, documentation and automated workflows.</li>
@@ -368,8 +362,26 @@
     </div>
   </section>
 
+  <section class="stack" aria-labelledby="stack-h">
+    <div class="in">
+      <h2 id="stack-h">Tools I work with</h2>
+      <ul class="logos"><li><img src="img/logos/n8n.svg" width="34" height="34" alt="n8n" title="n8n" loading="lazy"></li><li><img src="img/logos/claude.svg" width="34" height="34" alt="Claude" title="Claude" loading="lazy"></li><li><img src="img/logos/googlegemini.svg" width="34" height="34" alt="Google Gemini" title="Google Gemini" loading="lazy"></li><li><img src="img/logos/googlesheets.svg" width="34" height="34" alt="Google Sheets" title="Google Sheets" loading="lazy"></li><li><img src="img/logos/googledocs.svg" width="34" height="34" alt="Google Docs" title="Google Docs" loading="lazy"></li><li><img src="img/logos/googledrive.svg" width="34" height="34" alt="Google Drive" title="Google Drive" loading="lazy"></li><li><img src="img/logos/gmail.svg" width="34" height="34" alt="Gmail" title="Gmail" loading="lazy"></li><li><img src="img/logos/hubspot.svg" width="34" height="34" alt="HubSpot" title="HubSpot" loading="lazy"></li><li><img src="img/logos/telegram.svg" width="34" height="34" alt="Telegram" title="Telegram" loading="lazy"></li><li><img src="img/logos/whatsapp.svg" width="34" height="34" alt="WhatsApp" title="WhatsApp" loading="lazy"></li><li><img src="img/logos/discord.svg" width="34" height="34" alt="Discord" title="Discord" loading="lazy"></li><li><img src="img/logos/x.svg" width="34" height="34" alt="X" title="X" loading="lazy"></li><li><img src="img/logos/facebook.svg" width="34" height="34" alt="Facebook" title="Facebook" loading="lazy"></li><li><img src="img/logos/instagram.svg" width="34" height="34" alt="Instagram" title="Instagram" loading="lazy"></li><li><img src="img/logos/javascript.svg" width="34" height="34" alt="JavaScript" title="JavaScript" loading="lazy"></li><li><img src="img/logos/docker.svg" width="34" height="34" alt="Docker" title="Docker" loading="lazy"></li><li><img src="img/logos/vercel.svg" width="34" height="34" alt="Vercel" title="Vercel" loading="lazy"></li><li><img src="img/logos/figma.svg" width="34" height="34" alt="Figma" title="Figma" loading="lazy"></li><li><img src="img/logos/davinciresolve.svg" width="34" height="34" alt="DaVinci Resolve" title="DaVinci Resolve" loading="lazy"></li></ul>
+      <p class="sub">I build on the tools you already use, so your team has nothing new to learn. Also OpenAI, Apollo, Microsoft Outlook, Canva, CapCut and LinkedIn.</p>
+    </div>
+  </section>
+
+  </div>
+
+  <section id="approach" class="approach">
+    <div class="in">
+      <div class="head"><p class="kicker">the promise</p><h2>What I promise</h2></div>
+      <ol><li><h3>I learn how you work first</h3><p>A lot of what looks like an automation problem is really a process nobody has written down. I map how the work happens today, who does it and where it goes wrong, then we decide together what's worth automating.</p></li><li><h3>A person approves anything important</h3><p>AI drafts, sorts and summarises. You or your team approve anything that sends an email, changes who owns a task or closes it. I tell you exactly where that line sits.</p></li><li><h3>Tested before you rely on it</h3><p>I test each step on its own, write down what broke and how I fixed it, and leave you a short guide, so your team can keep it running.</p></li></ol>
+    </div>
+  </section>
+
   <section id="contact" class="contact">
     <div class="in">
+      <p class="kicker">your next step</p>
       <h2>Got a process that keeps eating your week?</h2>
       <p>Tell me what the manual version looks like right now: who touches it, where it breaks, and what it costs you when it does. That's usually enough for me to say whether it's worth automating.</p>
       <div class="ctas">
