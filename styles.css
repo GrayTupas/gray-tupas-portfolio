@@ -106,11 +106,10 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 20; pointer-event
 .facts { padding: 36px 0; }
 .facts .in { display: grid; gap: 28px; }
 @media (min-width: 860px) { .facts .in { grid-template-columns: 1.3fr 1fr; align-items: center; } }
-.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 32px; margin: 0; }
-@media (min-width: 560px) { .stats { grid-template-columns: repeat(4, auto); justify-content: start; } }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; margin: 0; }
 .stats div { display: flex; flex-direction: column; }
 .stats dd { order: -1; margin: 0; font: 500 2rem/1 var(--mono); letter-spacing: -0.02em; }
-.stats dt { margin-top: 8px; font-size: .85rem; color: var(--muted); }
+.stats dt { margin-top: 8px; max-width: 30ch; font-size: .85rem; color: var(--muted); }
 .now h2 { font-size: .95rem; letter-spacing: 0; }
 .now ul { margin: 8px 0 0; padding-left: 18px; color: var(--text-2); font-size: .95rem; }
 .now li::marker { color: var(--accent); }
@@ -212,6 +211,7 @@ details ul { margin: 6px 0 0; padding-left: 18px; }
 .contact { background: var(--panel); }
 .contact h2 { font-size: clamp(2rem, 4.4vw, 3.2rem); max-width: 18ch; }
 .contact p { max-width: 56ch; margin: 18px 0 28px; color: var(--text-2); }
+.contact .note-sm { margin: 14px 0 0; font-size: .9rem; color: var(--muted); }
 .clist { display: flex; flex-wrap: wrap; gap: 0 28px; list-style: none; margin: 32px 0 0; padding: 0; }
 .clist a, .clist .static { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; text-decoration: none; }
 .clist a:hover .cv { color: var(--accent); }
