@@ -102,6 +102,14 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 20; pointer-event
   @keyframes flow { to { stroke-dashoffset: -28; } }
 }
 
+/* ============ HOME: PAIN ============ */
+.pains { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 16px; }
+@media (min-width: 700px) { .pains { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pains .body { padding: 20px 22px; }
+.pains h3 { font-size: 1.15rem; }
+.pains p { margin-top: 8px; color: var(--text-2); }
+.bridge { margin-top: 32px; }
+
 /* ============ HOME: FACTS ============ */
 .facts { padding: 36px 0; }
 .facts .in { display: grid; gap: 28px; }
