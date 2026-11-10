@@ -30,6 +30,8 @@
   </div>
 </header>
 
+<nav class="rail" aria-label="Steps on this page"><a href="#problem"><span>the problem</span></a><a href="#result"><span>the result</span></a><a href="#how"><span>how I did it</span></a><a href="#limits"><span>the honest limits</span></a><a href="#next"><span>your next step</span></a></nav>
+
 <main id="main">
   <div class="cs-hero">
     <div class="in">
@@ -48,28 +50,22 @@
 
   <article class="in cs">
 
+    <div class="chapter" id="problem">
+
     <section>
-      <h2>Problem</h2>
+      <p class="kicker">the problem</p>
+      <h2>The plan lived in meetings, not on paper</h2>
       <p>The requirements for this site came out of client meetings, not a written spec. An AI coding agent will build whatever it is told, including features nobody has decided on yet. I needed a way to turn each meeting into a small, checked piece of work.</p>
     </section>
 
-    <section>
-      <h2>My role</h2>
-      <p>I designed and built the full site solo, using Claude Code as my coding agent. I wrote every prompt, reviewed every build, and decided what was ready to go in.</p>
-    </section>
+    </div>
+
+    <div class="chapter" id="result">
 
     <section>
-      <h2>How it works</h2>
-      <p>Every change to the site went through the same five steps.</p>
-      <ol class="process">
-        <li><b>Client meeting</b>The client says what they want and reacts to the current version.</li>
-        <li><b>Transcript</b>The meeting transcript is the source for the next piece of work.</li>
-        <li><b>Scoped Claude Code prompt</b>One prompt per piece of work, with checkpoints written into it.</li>
-        <li><b>Build</b>Claude Code builds up to the next checkpoint, then stops.</li>
-        <li><b>Review</b>I check the result before the next step starts.</li>
-      </ol>
-      <p>Two files carried the project between sessions. A <span class="mono">CLAUDE.md</span> file held the build rules, and a decision log kept the history.</p>
-      <p>This is what that process produced.</p>
+      <p class="kicker">the result</p>
+      <h2>What the client got</h2>
+      <p>A multi-page website, live since October 2026. A few days after launch, it was the first source Google's AI answer pointed to for "document courier singapore".</p>
       <figure class="shot">
         <img src="../../screenshots/12-courier-services.webp" width="1440" height="1165" loading="lazy" alt="The 'Choose your delivery service' section: five service cards for Same-Day, Express, Night &amp; Weekend, Van and Direct, above a table that matches what the customer needs to the right service.">
         <figcaption>Service cards and the service-picker table</figcaption>
@@ -78,16 +74,6 @@
         <img src="../../screenshots/13-courier-how.webp" width="1440" height="635" loading="lazy" alt="The 'From request to doorstep' section: four numbered steps. Tell us what and when, we confirm price and pickup, a rider collects, delivered and confirmed.">
         <figcaption>The 4-step "how it works"</figcaption>
       </figure>
-    </section>
-
-    <section>
-      <h2>Key decisions</h2>
-      <ul>
-        <li><strong>Scope from the meeting.</strong> Each prompt was written from a meeting transcript, so the work matched what the client actually asked for.</li>
-        <li><strong>Hold back what isn't ready.</strong> Features still in development stay listed as in development. They are not presented as finished.</li>
-        <li><strong>Checkpoints in every prompt.</strong> The agent stops at set points so I can review before it continues.</li>
-        <li><strong>Rules and history live in files.</strong> <span class="mono">CLAUDE.md</span> holds the build rules. The decision log records what was decided and keeps the history.</li>
-      </ul>
     </section>
 
     <section>
@@ -120,7 +106,45 @@
       </div>
     </section>
 
+    </div>
+
+    <div class="chapter" id="how">
+
     <section>
+      <p class="kicker">how I did it</p>
+      <h2>My role</h2>
+      <p>I designed and built the full site solo, using Claude Code as my coding agent. I wrote every prompt, reviewed every build, and decided what was ready to go in.</p>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <p>Every change to the site went through the same five steps.</p>
+      <ol class="process">
+        <li><b>Client meeting</b>The client says what they want and reacts to the current version.</li>
+        <li><b>Transcript</b>The meeting transcript is the source for the next piece of work.</li>
+        <li><b>Scoped Claude Code prompt</b>One prompt per piece of work, with checkpoints written into it.</li>
+        <li><b>Build</b>Claude Code builds up to the next checkpoint, then stops.</li>
+        <li><b>Review</b>I check the result before the next step starts.</li>
+      </ol>
+      <p>Two files carried the project between sessions. A <span class="mono">CLAUDE.md</span> file held the build rules, and a decision log kept the history.</p>
+    </section>
+
+    <section>
+      <h2>Key decisions</h2>
+      <ul>
+        <li><strong>Scope from the meeting.</strong> Each prompt was written from a meeting transcript, so the work matched what the client actually asked for.</li>
+        <li><strong>Hold back what isn't ready.</strong> Features still in development stay listed as in development. They are not presented as finished.</li>
+        <li><strong>Checkpoints in every prompt.</strong> The agent stops at set points so I can review before it continues.</li>
+        <li><strong>Rules and history live in files.</strong> <span class="mono">CLAUDE.md</span> holds the build rules. The decision log records what was decided and keeps the history.</li>
+      </ul>
+    </section>
+
+    </div>
+
+    <div class="chapter" id="limits">
+
+    <section>
+      <p class="kicker">the honest limits</p>
       <h2>Limitations</h2>
       <ul>
         <li>The booking calendar, tracking link, reminder email and "Track a delivery" link are still in development.</li>
@@ -129,13 +153,25 @@
       </ul>
     </section>
 
+    </div>
+
+    <section id="next" class="cs-next">
+      <p class="kicker">your next step</p>
+      <h2>Want something like this for your business?</h2>
+      <p>Tell me what you need built and how you work today. On a free call I'll tell you whether I'm the right fit and what it would take.</p>
+      <div class="ctas">
+        <a class="btn primary" href="https://calendly.com/va-graytupas/free-audit" target="_blank" rel="noopener">Book a free call</a>
+        <a class="btn ghost" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=va.graytupas@gmail.com&amp;su=Enquiry%20from%20your%20portfolio" target="_blank" rel="noopener">Email me</a>
+      </div>
+      <p class="note-sm">Free 30-minute call. No pitch if it's not a fit.</p>
+    </section>
+
     <section>
       <h2>Links</h2>
       <ul>
         <li>Also built for this client: <a href="../../#work">BUILD 01, an AI email assistant, built and presented as a proposal</a></li>
         <li><a href="../../#case-studies">Back to case studies</a></li>
         <li><a href="../ai-workspace/">Case study: my AI workspace system</a></li>
-        <li><a href="../../#contact">Contact me</a></li>
       </ul>
     </section>
 
@@ -143,5 +179,6 @@
 </main>
 
 <footer class="foot"><div class="in">Gray-Jan A. Tupas · AI Automation &amp; Operations · 2026</div></footer>
+<script src="../../site.js" defer></script>
 </body>
 </html>
