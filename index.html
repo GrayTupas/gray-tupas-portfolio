@@ -59,13 +59,37 @@
   <section class="pain" id="problem" aria-labelledby="pain-h">
     <div class="in">
       <p class="kicker">the problem</p>
-      <h2 id="pain-h">Your team is busy with work a system could do</h2>
-      <p class="sub">It's rarely hard work. It just never ends, and it lands on the people you need for everything else.</p>
+      <h2 id="pain-h">If it's repetitive, I can automate it</h2>
+      <p class="sub">Emails, data entry, reports, follow-ups, approvals, onboarding, or the process around them. List what your team does again and again and see roughly what you'd get back.</p>
+      <div class="calc" id="calc" data-wires="c-in>c-out">
+        <div class="node c-in" id="c-in">
+          <header><span>trigger · your repetitive work</span></header>
+          <div class="c-body">
+            <div class="c-chips" role="group" aria-label="Add an example task"><button type="button" data-t="Answering customer emails" data-f="100" data-m="5">Customer emails</button><button type="button" data-t="Copying data between systems" data-f="50" data-m="3">Data entry</button><button type="button" data-t="Writing weekly reports" data-f="1" data-m="90">Reports</button><button type="button" data-t="Chasing unpaid invoices" data-f="15" data-m="6">Invoice follow-ups</button><button type="button" data-t="Onboarding a new client" data-f="2" data-m="60">Client onboarding</button><button type="button" data-t="Booking and rescheduling" data-f="25" data-m="4">Scheduling</button></div>
+            <ul class="c-rows"><li class="c-row"><label><span>Task</span><input type="text" value="Answering customer emails" maxlength="60"></label><label><span>Times a week</span><input type="number" inputmode="numeric" min="0" max="10000" value="100"></label><label><span>Minutes each</span><input type="number" inputmode="numeric" min="0" max="600" value="5"></label><button class="c-x" type="button" aria-label="Remove Answering customer emails">Remove</button></li><li class="c-row"><label><span>Task</span><input type="text" value="Copying data between systems" maxlength="60"></label><label><span>Times a week</span><input type="number" inputmode="numeric" min="0" max="10000" value="50"></label><label><span>Minutes each</span><input type="number" inputmode="numeric" min="0" max="600" value="3"></label><button class="c-x" type="button" aria-label="Remove Copying data between systems">Remove</button></li></ul>
+            <button class="c-add" type="button">Add something else</button>
+            <p class="c-err" role="alert"></p>
+            <label class="c-rate"><span>Cost of an hour of your team's time, in US dollars</span><input type="number" inputmode="numeric" min="0" max="1000" value="12"></label>
+          </div>
+        </div>
+        <div class="node c-out" id="c-out" aria-live="polite">
+          <header><span>output · you get back</span><em>done</em></header>
+          <div class="c-body">
+            <p class="c-hrs"><b>8.7 hrs</b> a week</p>
+            <p class="c-money"><b>$450</b> a month</p>
+            <p class="c-win">Biggest win: answering customer emails, about 6.7 hrs a week.</p>
+            <a class="btn primary" href="https://calendly.com/va-graytupas/free-audit" target="_blank" rel="noopener">Book a free call</a>
+          </div>
+        </div>
+        <svg class="wires" aria-hidden="true" focusable="false"></svg>
+      </div>
+      <p class="c-note">A rough estimate: it assumes about 80% of each task is automated and a person still approves anything important. Not a client result.</p>
+      <h3 class="pains-h">Where it usually starts</h3>
       <ul class="pains">
-        <li class="node"><header><span>inbox · 5&ndash;6 hrs to reply</span></header><div class="body"><h3>Customers wait hours for an answer</h3><p>At one courier company, emails sat 5 to 6 hours, sometimes a full day. Every hour a quote goes unanswered, the customer can ask someone else.</p><a class="fix" href="#work">See the fix: the email assistant</a></div></li>
-        <li class="node"><header><span>crm · same lead, twice</span></header><div class="body"><h3>The same lead gets entered twice</h3><p>Then two people chase one person, or each thinks the other did and nobody does.</p><a class="fix" href="#fix-leads">See the fix: lead clean-up</a></div></li>
-        <li class="node"><header><span>reports · by hand</span></header><div class="body"><h3>Reports eat the end of every week</h3><p>Someone copies numbers between sheets, docs and chats to say what happened, instead of doing the next thing.</p><a class="fix" href="#fix-reports">See the fix: the reporting assistant</a></div></li>
-        <li class="node"><header><span>know-how · one person</span></header><div class="body"><h3>It all lives in one person's head</h3><p>When they're sick or busy, the work stops, and new people learn it by asking around.</p><a class="fix" href="#fix-guides">See the fix: the guides I wrote</a></div></li>
+        <li class="node"><header><span>inbox · 5&ndash;6 hrs to reply</span></header><div class="body"><h4>Customers wait hours for an answer</h4><p>At one courier company, emails sat 5 to 6 hours, sometimes a full day. Every hour a quote goes unanswered, the customer can ask someone else.</p><a class="fix" href="#work">See the fix: the email assistant</a></div></li>
+        <li class="node"><header><span>crm · same lead, twice</span></header><div class="body"><h4>The same lead gets entered twice</h4><p>Then two people chase one person, or each thinks the other did and nobody does.</p><a class="fix" href="#fix-leads">See the fix: lead clean-up</a></div></li>
+        <li class="node"><header><span>reports · by hand</span></header><div class="body"><h4>Reports eat the end of every week</h4><p>Someone copies numbers between sheets, docs and chats to say what happened, instead of doing the next thing.</p><a class="fix" href="#fix-reports">See the fix: the reporting assistant</a></div></li>
+        <li class="node"><header><span>know-how · one person</span></header><div class="body"><h4>It all lives in one person's head</h4><p>When they're sick or busy, the work stops, and new people learn it by asking around.</p><a class="fix" href="#fix-guides">See the fix: the guides I wrote</a></div></li>
       </ul>
       <p class="sub bridge">Here's what fixing it has looked like so far.</p>
     </div>

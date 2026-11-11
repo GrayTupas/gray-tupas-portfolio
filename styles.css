@@ -106,7 +106,53 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 20; pointer-event
 .pains { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 16px; }
 @media (min-width: 700px) { .pains { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .pains .body { padding: 20px 22px; }
-.pains h3 { font-size: 1.15rem; }
+.pains h4 { font-size: 1.15rem; }
+.pains-h { margin-top: 56px; font-size: 1.3rem; }
+
+/* ============ HOME: CALCULATOR (site.js; static example without JS) ============ */
+.calc { position: relative; display: grid; gap: 16px; margin-top: 32px; }
+@media (min-width: 860px) { .calc { grid-template-columns: 1.5fr 1fr; gap: 56px; align-items: center; } }
+.calc .c-body { padding: 18px; }
+.c-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.c-chips button, .c-add { min-height: 44px; padding: 0 14px; border: 1px solid var(--edge); border-radius: 999px; background: var(--panel-2); color: var(--text-2); font: inherit; font-size: .88rem; cursor: pointer; transition: border-color .2s ease, color .2s ease; }
+.c-chips button::before, .c-add::before { content: "+ "; color: var(--accent); }
+.c-chips button:hover, .c-add:hover { border-color: var(--accent); color: var(--text); }
+.c-chips button:active, .c-add:active { transform: scale(.98); }
+.c-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.c-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--edge); }
+.c-row label:first-child { grid-column: 1 / -1; }
+.c-row label span, .c-rate span { display: block; margin-bottom: 4px; font: 500 .74rem var(--mono); color: var(--muted); }
+.calc input { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--edge); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; font-size: .95rem; }
+.calc input[type=number] { font-family: var(--mono); }
+.calc input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.calc input[aria-invalid=true] { border-color: #F09595; }
+.c-x { grid-column: 1 / -1; justify-self: start; min-height: 44px; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.c-x:hover { color: var(--text); }
+@media (min-width: 560px) {
+  .c-row { grid-template-columns: 1fr 110px 110px auto; align-items: end; }
+  .c-row label:first-child { grid-column: auto; }
+  .c-x { grid-column: auto; }
+  .c-row + .c-row label span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+.c-add { margin-top: 12px; }
+.c-err { min-height: 0; margin: 8px 0 0; color: #F09595; font-size: .9rem; }
+.c-err:empty { display: none; }
+.c-rate { display: block; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--edge); }
+.c-rate input { max-width: 140px; }
+.c-out header em { margin-left: auto; font-style: normal; color: var(--accent); }
+.c-hrs { margin: 0; color: var(--muted); }
+.c-hrs b { display: block; font: 500 clamp(2.4rem, 5vw, 3.2rem)/1 var(--mono); letter-spacing: -0.03em; color: var(--text); }
+.c-money { margin: 14px 0 0; color: var(--muted); }
+.c-money b { font: 500 1.5rem var(--mono); color: var(--accent); }
+.c-win { margin: 16px 0 20px; padding-top: 14px; border-top: 1px solid var(--edge); color: var(--text-2); font-size: .95rem; }
+.c-note { margin-top: 14px; font-size: .85rem; color: var(--muted); max-width: 70ch; }
+@media (prefers-reduced-motion: no-preference) {
+  /* feedback: the wire carries data while the output recalculates */
+  .calc .wires path { stroke-dasharray: 6 8; }
+  .calc.run .wires path { animation: flow .5s linear infinite; }
+  .calc.run .c-out { border-color: var(--accent); }
+  .c-out { transition: border-color .3s ease; }
+}
 .pains p { margin-top: 8px; color: var(--text-2); }
 .bridge { margin-top: 32px; }
 .fix { display: inline-flex; align-items: center; min-height: 44px; margin-top: 6px; font-size: .92rem; font-weight: 600; color: var(--accent); text-underline-offset: 3px; }

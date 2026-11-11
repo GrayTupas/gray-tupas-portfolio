@@ -151,6 +151,69 @@
   set(false);
 })();
 
+// Calculator: the visitor lists repetitive tasks; the output node shows a rough estimate of time and money back.
+(function () {
+  var box = document.getElementById('calc');
+  if (!box) return;
+  var list = box.querySelector('.c-rows'), err = box.querySelector('.c-err'), rate = box.querySelector('.c-rate input');
+  var out = box.querySelector('.c-out'), status = out.querySelector('header em'), MAX = 8, timer;
+  var hrs = out.querySelector('.c-hrs b'), money = out.querySelector('.c-money b'), win = out.querySelector('.c-win');
+  var template = list.querySelector('.c-row').cloneNode(true);
+  function fmt(h) { return (h < 10 ? h.toFixed(1) : Math.round(h)) + ' hrs'; }
+  function num(input) { // empty or invalid counts as a mistake, shown inline
+    var v = input.value.trim() === '' ? NaN : Number(input.value);
+    var bad = isNaN(v) || v < 0 || v > Number(input.max);
+    input.setAttribute('aria-invalid', bad);
+    return bad ? null : v;
+  }
+  function calc() {
+    var mins = 0, bad = false, top = null;
+    list.querySelectorAll('.c-row').forEach(function (row) {
+      var i = row.querySelectorAll('input');
+      if (i[1].value.trim() === '' && i[2].value.trim() === '') { i[1].removeAttribute('aria-invalid'); i[2].removeAttribute('aria-invalid'); return; } // a new row nobody has filled in yet
+      var f = num(i[1]), m = num(i[2]);
+      if (f === null || m === null) { bad = true; return; }
+      var saved = f * m * 0.8;   // shortcut: flat 80% automation rate, refine per task once Gray has real project data
+      mins += saved;
+      if (!top || saved > top[1]) top = [i[0].value.trim() || 'that task', saved];
+    });
+    var r = num(rate);
+    if (r === null) bad = true;
+    if (bad) { err.textContent = 'Check the red boxes: use a number of 0 or more.'; return; }
+    err.textContent = '';
+    var h = mins / 60;
+    hrs.textContent = fmt(h);
+    money.textContent = '$' + Math.round(h * r * 4.33).toLocaleString('en-US');
+    win.textContent = top && top[1] > 0 ? 'Biggest win: ' + top[0].toLowerCase() + ', about ' + fmt(top[1] / 60) + ' a week.' : 'Add a task to see where the hours go.';
+    box.classList.add('run'); status.textContent = 'running';
+    clearTimeout(timer);
+    timer = setTimeout(function () { box.classList.remove('run'); status.textContent = 'done'; }, 700);
+  }
+  function wire(row) {
+    row.querySelectorAll('input').forEach(function (i) { i.addEventListener('input', calc); });
+    row.querySelector('.c-x').addEventListener('click', function () {
+      var next = row.nextElementSibling || row.previousElementSibling;
+      row.remove(); calc(); sync();
+      (next ? next.querySelector('input') : box.querySelector('.c-add')).focus();
+    });
+  }
+  function sync() { var full = list.children.length >= MAX; box.querySelectorAll('.c-chips button, .c-add').forEach(function (b) { b.disabled = full; }); }
+  function add(t, f, m) {
+    if (list.children.length >= MAX) return null;
+    var row = template.cloneNode(true), i = row.querySelectorAll('input');
+    i[0].value = t; i[1].value = f; i[2].value = m;
+    row.querySelector('.c-x').setAttribute('aria-label', 'Remove ' + (t || 'this task'));
+    list.appendChild(row); wire(row); calc(); sync();
+    return i[0];
+  }
+  list.querySelectorAll('.c-row').forEach(wire);
+  rate.addEventListener('input', calc);
+  box.querySelectorAll('.c-chips button').forEach(function (b) {
+    b.addEventListener('click', function () { add(b.dataset.t, b.dataset.f, b.dataset.m); });
+  });
+  box.querySelector('.c-add').addEventListener('click', function () { var i = add('', '', ''); if (i) i.focus(); });
+})();
+
 // Side wire of steps: the dot of the step in the middle of the screen fills, earlier ones stay lit, the wire grows to it.
 (function () {
   var rail = document.querySelector('.rail');
