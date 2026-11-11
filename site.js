@@ -109,6 +109,7 @@
     if ('ResizeObserver' in window) new ResizeObserver(function () { draw(box); }).observe(box);
     window.addEventListener('load', function () { draw(box); });
     wide.addEventListener('change', function () { draw(box); });
+    box.addEventListener('relayout', function () { draw(box); }); // nodes moved without a resize (dragging)
     draw(box);
   });
 })();
@@ -261,6 +262,80 @@
     });
   }
   setTimeout(function () { cycle(); setInterval(cycle, 4000); }, 2000);
+})();
+
+// The hero is a live canvas on desktop, like n8n: a connection wire follows the cursor into the portrait's
+// input, and plugs into "Book a free call" when the cursor reaches it. The nodes can be dragged; the wires follow.
+(function () {
+  var hero = document.querySelector('.hero'), flow = hero && hero.querySelector('.hero-flow'), me = document.getElementById('me');
+  if (!flow || !me || !window.matchMedia) return;
+  var desk = matchMedia('(min-width: 860px) and (pointer: fine)'), root = document.documentElement;
+  var cta = hero.querySelector('.ctas .btn.primary');
+  var busy = function () { return !desk.matches || root.classList.contains('intro') || root.classList.contains('intro-moving'); };
+  var NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'ghost'); svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = '<path/><circle r="4"/><circle class="in-dot" r="4"/>';
+  hero.prepend(svg);
+  var path = svg.querySelector('path'), tip = svg.querySelector('circle'), dot = svg.querySelector('.in-dot');
+  var hint = document.createElement('p');
+  hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true'); hint.textContent = 'Drag the nodes around';
+  flow.appendChild(hint);
+
+  var px = null, py = null, frame = 0;
+  function paint() {
+    frame = 0;
+    var h = hero.getBoundingClientRect(), m = me.getBoundingClientRect();
+    svg.setAttribute('viewBox', '0 0 ' + h.width + ' ' + h.height);
+    var x2 = m.left - h.left, y2 = m.top + m.height / 2 - h.top;
+    dot.setAttribute('cx', x2); dot.setAttribute('cy', y2);
+    var show = px !== null && !busy() && px < m.left - 24;
+    svg.classList.toggle('on', show);
+    if (!show) { if (cta) cta.classList.remove('linked'); return; }
+    var x1 = px - h.left, y1 = py - h.top, linked = false;
+    if (cta) {
+      var b = cta.getBoundingClientRect();
+      linked = px > b.left - 24 && px < b.right + 24 && py > b.top - 24 && py < b.bottom + 24;
+      cta.classList.toggle('linked', linked);
+      if (linked) { x1 = b.right - h.left; y1 = b.top + b.height / 2 - h.top; }
+    }
+    svg.classList.toggle('linked', linked);
+    var dx = Math.max(40, (x2 - x1) / 2);
+    path.setAttribute('d', 'M' + x1 + ' ' + y1 + 'C' + (x1 + dx) + ' ' + y1 + ' ' + (x2 - dx) + ' ' + y2 + ' ' + x2 + ' ' + y2);
+    tip.setAttribute('cx', x1); tip.setAttribute('cy', y1);
+  }
+  function queue() { if (!frame) frame = requestAnimationFrame(paint); }
+  hero.addEventListener('pointermove', function (e) { if (e.pointerType === 'touch') return; px = e.clientX; py = e.clientY; queue(); });
+  hero.addEventListener('pointerleave', function () { px = null; queue(); });
+  window.addEventListener('resize', queue);
+
+  // dragging: pointer only, desktop only; the node keeps its new place until reload
+  flow.querySelectorAll('.node').forEach(function (node) {
+    var start = null;
+    node.addEventListener('dragstart', function (e) { e.preventDefault(); }); // the portrait image would start a native drag
+    node.addEventListener('pointerdown', function (e) {
+      if (busy() || e.button !== 0) return;
+      var t = (node.style.translate || '0px 0px').split(' ');
+      start = { x: e.clientX, y: e.clientY, tx: parseFloat(t[0]) || 0, ty: parseFloat(t[1]) || 0, r: node.getBoundingClientRect(), h: hero.getBoundingClientRect() };
+      node.setPointerCapture(e.pointerId);
+      node.classList.add('dragging'); hint.classList.add('used');
+    });
+    node.addEventListener('pointermove', function (e) {
+      if (!start) return;
+      var s = start, dx = e.clientX - s.x, dy = e.clientY - s.y;
+      dx = Math.min(Math.max(dx, s.h.left + 8 - s.r.left), s.h.right - 8 - s.r.right);   // stay inside the hero
+      dy = Math.min(Math.max(dy, s.h.top + 8 - s.r.top), s.h.bottom - 8 - s.r.bottom);
+      node.style.translate = (s.tx + dx) + 'px ' + (s.ty + dy) + 'px';
+      flow.dispatchEvent(new Event('relayout'));
+      queue();
+    });
+    function end() { if (!start) return; start = null; node.classList.remove('dragging'); }
+    node.addEventListener('pointerup', end);
+    node.addEventListener('pointercancel', end);
+  });
+  desk.addEventListener('change', function () { // back to the normal layout on narrow screens
+    if (!desk.matches) flow.querySelectorAll('.node').forEach(function (n) { n.style.translate = ''; });
+    flow.dispatchEvent(new Event('relayout')); queue();
+  });
 })();
 
 // Screenshot viewer: image links open in a dialog over the page instead of leaving it.
