@@ -16,7 +16,8 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; } /* each scroll lands on the next section; inside a section taller than the screen you scroll freely */
+main > section { scroll-snap-align: start; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.55 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
@@ -158,7 +159,7 @@ html.crew .piece.held { color: transparent; } /* the crew is the word right now,
 .clist a:hover { border-color: var(--accent); }
 .clist span { font: 500 .74rem var(--mono); color: var(--muted); }
 @media (min-width: 760px) { .clist { grid-template-columns: 1fr 1fr; } }
-.foot { position: relative; z-index: 1; padding: 28px var(--pad); border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); text-align: center; }
+.foot { scroll-snap-align: end; position: relative; z-index: 1; padding: 28px var(--pad); border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); text-align: center; }
 
 /* until the crew gets there, a section's parts are hidden (html.crew is set by v2.js, never under reduced motion) */
 html.crew .sb:not(.built) { clip-path: inset(0 100% 0 0); }
