@@ -211,8 +211,12 @@ function layout() {
     while (crew.length < crewCount) crew.push(makeMini({ pos: new THREE.Vector3(), mode: 'wait', s: 1, tw: null, hop: -9, dodge: 0, face: 0, k: crew.length, act: 'breathe', actT: 0, nextAct: 1 + Math.random() * 2, spin: 0 }));
   }
   slots.length = 0;
-  const span = mobile ? 15 : 14; // in the big figure's space, so it grows with him
-  for (let k = 0; k < crewCount; k++) slots.push(new THREE.Vector3(-span + (2 * span) * k / (crewCount - 1), 0, 2 + (k % 2) * 2)); // beside his feet, clear of the bottom row
+  // half the crew each side of his feet, never on top of them (his shoes reach x = ±4, his hands x = ±7)
+  const gap = mobile ? 3.6 : 3, nl = Math.floor(crewCount / 2);
+  for (let k = 0; k < crewCount; k++) {
+    const left = k < nl, i = left ? nl - 1 - k : k - nl;
+    slots.push(new THREE.Vector3((left ? -1 : 1) * (8 + i * gap), 0, 1 + (k % 2) * 2));
+  }
 }
 layout();
 addEventListener('resize', layout);
@@ -446,7 +450,8 @@ function updateCrew(dt) {
     else if (m.mode === 'away') awayPos(k, m.pos);
     // look at the cursor, step aside when it gets close
     const dx = cursor.x - m.pos.x, near = mouse.in && Math.hypot(dx, cursor.y - (m.pos.y + 2)) < 3.2;
-    m.dodge += ((near ? -Math.sign(dx || 1) * 3 : 0) - m.dodge) * Math.min(1, dt * 8);
+    const away = m.mode === 'base' ? Math.sign(slots[k].x) : -Math.sign(dx || 1); // next to him, always step outwards
+    m.dodge += ((near ? away * 3 : 0) - m.dodge) * Math.min(1, dt * 8);
     // look at the work: the text being built, or the block just thrown at the big figure; otherwise the cursor
     let faceT = mouse.in ? THREE.MathUtils.clamp(dx * 0.08, -1.1, 1.1) : 0;
     m.pitch = 0;
