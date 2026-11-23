@@ -443,19 +443,28 @@ function reveal(i) { // reached by keyboard: finished at once
   if (PIECES[i] && !PIECES[i].classList.contains('held')) PIECES[i].classList.add('filled');
 }
 addEventListener('focusin', e => { const i = SECS.indexOf(e.target.closest && e.target.closest('main > section')); if (i > 0) reveal(i); });
-// soft snap: when you stop scrolling close to the next section start in the direction you were going, glide the
-// last bit. Never pulls back against you, never blocks a wheel notch (CSS snap did both).
+// snap, medium strength: when you stop scrolling, the page settles on a section start (or a tall section's end).
+// Go 30% of the way and it carries on to the next one; less and it eases back, so one wheel notch never flips a
+// page (CSS snap did, Gray 2026-11-23). Inside a section taller than the screen you scroll freely.
 let lastY = scrollY, dir = 0, settleT = 0;
+function settle() {
+  const y = scrollY, stops = [], free = [];
+  for (const s of SECS) {
+    const top = Math.round(s.getBoundingClientRect().top + y), end = top + s.offsetHeight - innerHeight;
+    stops.push(top);
+    if (end > top + 2) { stops.push(end); free.push([top, end]); }
+  }
+  stops.push(document.documentElement.scrollHeight - innerHeight); // footer
+  stops.sort((a, b) => a - b);
+  let a = stops[0], b = stops[stops.length - 1];
+  for (const v of stops) { if (v <= y) a = v; else { b = v; break; } }
+  if (b <= a || y <= a + 1 || free.some(([t, e]) => a >= t && b <= e)) return;
+  const p = (y - a) / (b - a), to = dir > 0 ? (p >= 0.3 ? b : a) : (p <= 0.7 ? a : b);
+  scrollTo({ top: to, behavior: 'smooth' });
+}
 if (!reduced) addEventListener('scroll', () => {
   if (scrollY !== lastY) dir = Math.sign(scrollY - lastY);
-  lastY = scrollY; clearTimeout(settleT);
-  settleT = setTimeout(() => {
-    const near = innerHeight * 0.22;
-    for (const s of SECS) {
-      const d = s.getBoundingClientRect().top; // distance to this section start
-      if (Math.abs(d) > 2 && Math.abs(d) < near && Math.sign(d) === dir) { scrollBy({ top: d, behavior: 'smooth' }); break; }
-    }
-  }, 160);
+  lastY = scrollY; clearTimeout(settleT); settleT = setTimeout(settle, 180);
 }, { passive: true });
 
 // the word, in voxels: drawn small on a canvas in the heading's own font, one block per lit pixel

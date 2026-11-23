@@ -16,7 +16,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; } /* no CSS snap: it fought every wheel notch (Gray 2026-11-23); v2.js glides the last bit instead */
+html { scroll-behavior: smooth; } /* no CSS snap: it flipped a page on every wheel notch (Gray 2026-11-23); v2.js settles on sections instead */
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.55 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
