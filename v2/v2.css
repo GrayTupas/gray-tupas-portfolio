@@ -88,3 +88,11 @@ main, .bar { position: relative; z-index: 1; }
 /* ---------- speech bubble over a mini builder ---------- */
 .tip { position: fixed; left: 0; top: 0; z-index: 5; margin: 0; max-width: 24ch; padding: 10px 14px; border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); color: var(--text); font-size: .88rem; line-height: 1.35; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); transition: opacity .2s ease; }
 .tip.on { opacity: 1; }
+
+/* ---------- intro: each part of the page stays hidden until a builder walks along it (html.intro is set in <head>) ---------- */
+html.intro .bld { clip-path: inset(0 100% 0 0); }
+html.intro .bld.built { animation: build .55s steps(7, end) both; }
+@keyframes build { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.skip-intro { display: none; }
+html.intro .skip-intro { display: inline-flex; align-items: center; position: fixed; right: var(--pad); bottom: 20px; z-index: 12; min-height: 44px; padding: 0 18px; border: 1px solid var(--edge); border-radius: 999px; background: var(--panel); color: var(--text); font: 500 .8rem var(--mono); cursor: pointer; }
+html.intro .skip-intro:hover { border-color: var(--accent); }

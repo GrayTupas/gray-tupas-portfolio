@@ -121,6 +121,20 @@ const bodyMesh = instanced(body, new THREE.MeshStandardMaterial({ roughness: 0.7
 const hatMesh = instanced(hat, new THREE.MeshStandardMaterial({ roughness: 0.45, emissive: '#3FCF8E', emissiveIntensity: 0.28 }));
 fig.add(bodyMesh, hatMesh);
 
+// the crate the crew starts in (intro only); a small emerald stamp on the front
+function crateModel() {
+  const { m, box } = model();
+  box(-4, 4, 0, 7, -4, 4, (x, y, z) => {
+    if (z === 4 && (y === 3 || y === 4) && Math.abs(x) <= 1) return C.hat;
+    const edge = (Math.abs(x) === 4) + (Math.abs(z) === 4) + (y === 0 || y === 7) >= 2;
+    return edge ? '#5A3D22' : (y % 2 ? '#8A6239' : '#7C5733');
+  });
+  return hollow(m).map(v => ({ ...v, z: v.z + 7 }));
+}
+const crateList = crateModel();
+const crateMesh = instanced(crateList, new THREE.MeshStandardMaterial({ roughness: 0.85 }));
+fig.add(crateMesh);
+
 // a soft emerald glow on the floor
 {
   const c = document.createElement('canvas'); c.width = c.height = 128;
@@ -196,12 +210,13 @@ const slotWorld = (k, out) => fig.localToWorld(out.copy(slots[k]));
 
 // ---------- blocks ----------
 function blocks(list) { return list.map(v => ({ target: new THREE.Vector3(v.x, v.y, v.z), pos: new THREE.Vector3(v.x, v.y, v.z), from: new THREE.Vector3(), vel: new THREE.Vector3(), axis: new THREE.Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(), ang: 0, spin: 0, s: 0, mode: 'hidden', t: 0, arc: 0, who: 0 })); }
-const B = blocks(body), H = blocks(hat);
+const B = blocks(body), H = blocks(hat), K = blocks(crateList);
 
 // each builder throws the blocks on its side of the figure, bottom row first
 B.forEach(b => { b.who = Math.min(7, Math.max(0, Math.floor((b.target.x + 8) / 16 * 8))); });
-const order = B.map((b, i) => [b.target.y + Math.random() * 1.5, i]).sort((a, b) => a[0] - b[0]);
-order.forEach(([, i], rank) => { B[i].t = 1.15 + rank / B.length * 2.7; B[i].mode = 'wait'; B[i].arc = 5 + B[i].target.y * 0.18; B[i].spin = (Math.random() - .5) * 8; });
+const order = B.map((b, i) => [b.target.y + Math.random() * 1.5, i]).sort((a, b) => a[0] - b[0]).map(p => p[1]);
+order.forEach(i => { B[i].arc = 5 + B[i].target.y * 0.18; B[i].spin = (Math.random() - .5) * 8; });
+function scheduleGray(t0, span) { order.forEach((i, rank) => { B[i].mode = 'wait'; B[i].t = t0 + rank / B.length * span; }); }
 
 // the hat is split into wedges, one per builder
 let hatGroups = [];
@@ -240,6 +255,11 @@ function writeBlocks(list, mesh, now, dt) {
       }
       case 'pop': { const u = Math.max(0, Math.min(1, (now - b.t0) / 0.35)); b.pos.copy(b.target); b.s = backOut(u); if (u >= 1) { b.mode = 'set'; b.s = 1; } break; }
       case 'shrink': { const u = Math.min(1, (now - b.t0) / 0.2); b.s = 1 - u; if (u >= 1) b.mode = 'hidden'; break; }
+      case 'toss': // thrown loose (the crate lid and walls), then gone
+        if (now < b.t0) break;
+        b.vel.y -= 45 * dt; b.pos.addScaledVector(b.vel, dt); b.ang += b.spin * dt;
+        if (now - b.t0 > 0.9) { b.mode = 'shrink'; b.t0 = now; }
+        break;
       case 'hidden': b.s = 0; break;
     }
     q.setFromAxisAngle(b.axis, b.ang);
@@ -284,6 +304,10 @@ function fromHat(m, dest, delay) {
 let now = 0, state = 'enter', blasting = false, peekUntil = 0;
 const mouse = { x: 0, y: 0, in: false }, cursor = new THREE.Vector3();
 
+const root = document.documentElement;
+function endIntro() { root.classList.remove('intro'); try { sessionStorage.setItem('gt-v2-intro', '1'); } catch (e) { /* storage blocked: the intro just plays again */ } }
+
+// repeat visits in the same tab: the page is already there, the crew runs in and builds only the figure
 function start() {
   crew.forEach((m, k) => {
     if (k >= crewCount) { m.mesh.visible = false; return; }
@@ -291,15 +315,57 @@ function start() {
     m.mode = 'jump'; m.run = true;
     jump(m, o => slotWorld(k, o), 1.0 + k * 0.04, 0, 1, 1, () => { m.mode = 'base'; m.run = false; });
   });
+  scheduleGray(1.15, 2.7);
   state = 'build';
 }
-function finishNow() { // reduced motion: show the finished figure, no build
-  B.forEach(b => { b.mode = 'set'; b.s = 1; b.pos.copy(b.target); });
+
+// first visit: the crew is packed in a crate. It shakes, the lid pops, they jump out and build every part of the
+// page (each element is revealed block by block as a builder walks along it), then the figure, then the hat.
+const OPEN = 0.75;
+function elPoint(el, side, out) {
+  const r = el.getBoundingClientRect();
+  return screenToWorld((side ? r.right - 6 : r.left + 6) / innerWidth, Math.min(0.97, (r.bottom + 4) / innerHeight), 10, out);
+}
+function nextJob(m) {
+  const el = m.jobs.shift();
+  if (!el) { m.mode = 'jump'; jump(m, o => slotWorld(m.k, o), 0.7, 8, 1, 1, () => { m.mode = 'base'; }); return; }
+  jump(m, o => elPoint(el, 0, o), 0.45, 3, 1, 1, () => {
+    el.classList.add('built'); m.run = true;
+    jump(m, o => elPoint(el, 1, o), 0.55, 0, 1, 1, () => { m.run = false; nextJob(m); });
+  });
+}
+function intro() {
+  K.forEach(b => { b.mode = 'set'; b.s = 1; });
+  B.forEach(b => { b.mode = 'wait'; b.t = Infinity; });
+  const els = [...document.querySelectorAll('.bld')].filter(el => el.getClientRects().length)
+    .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+  crew.slice(0, crewCount).forEach(m => { m.jobs = []; });
+  els.forEach((el, j) => crew[j % crewCount].jobs.push(el));
+  K.forEach(b => { // lid flies up at OPEN, the walls fall apart once everyone is out
+    const lid = b.target.y === 7;
+    b.t0 = lid ? OPEN : OPEN + crewCount * 0.11 + 0.35;
+    b.vel.set((b.target.x) * (lid ? 1.2 : 2.2) + (Math.random() - .5) * 6, lid ? 22 + Math.random() * 14 : 6 + Math.random() * 6, (b.target.z - 7) * (lid ? 1.2 : 2.2));
+    b.spin = (Math.random() - .5) * 12;
+    b.mode = 'toss';
+  });
+  crew.slice(0, crewCount).forEach((m, k) => {
+    fig.localToWorld(m.pos.set(0, 1, 7)); // inside the crate, hidden by its walls
+    m.mode = 'jump';
+    jump(m, o => m.jobs.length ? elPoint(m.jobs[0], 0, o) : slotWorld(k, o), 0.6, 10, 0.4, 1, () => nextJob(m), OPEN + 0.1 + k * 0.11);
+  });
+  state = 'page';
+}
+function finishNow() { // reduced motion, or "Skip intro": everything finished, nothing moving
+  endIntro();
+  B.forEach(b => { b.mode = 'set'; b.s = 1; b.ang = 0; b.pos.copy(b.target); });
   H.forEach(b => { b.mode = 'set'; b.s = 1; });
-  crew.forEach(m => { m.mode = 'hat'; m.mesh.visible = false; });
+  K.forEach(b => { b.mode = 'hidden'; });
+  crew.forEach(m => { m.mode = 'hat'; m.tw = null; m.run = false; m.mesh.visible = false; });
   state = 'done';
 }
-if (reduced) finishNow(); else start();
+if (reduced) finishNow(); else if (root.classList.contains('intro')) intro(); else start();
+const skipBtn = document.querySelector('.skip-intro');
+if (skipBtn) skipBtn.addEventListener('click', finishNow);
 
 function updateCrew(dt) {
   screenToWorld((mouse.x + 1) / 2, (1 - mouse.y) / 2, 10, cursor);
@@ -331,29 +397,35 @@ function updateCrew(dt) {
 
 function stateStep() {
   const sy = scrollY / innerHeight;
-  if (state === 'build' && B.every(b => b.mode === 'set') && crew.slice(0, crewCount).every(m => m.mode === 'base')) {
+  if (state === 'page' && crew.slice(0, crewCount).every(m => m.mode === 'base' && !m.tw)) { // the page is built: now the figure
+    endIntro();
+    scheduleGray(now + 0.15, 2.3);
+    state = 'build';
+  } else if (state === 'build' && B.every(b => b.mode === 'set') && crew.slice(0, crewCount).every(m => m.mode === 'base')) {
     crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.08));
     state = 'capping';
   } else if (state === 'capping' && crew.slice(0, crewCount).every(m => m.mode === 'hat')) state = 'done';
   else if (state === 'done' && sy > 0.3 && !reduced) { crew.slice(0, crewCount).forEach((m, k) => fromHat(m, 'away', k * 0.05)); state = 'out'; }
   else if (state === 'out' && sy < 0.15 && crew.slice(0, crewCount).every(m => !m.tw)) { crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.05)); state = 'capping'; }
   else if (state === 'peek') {
-    if (sy > 0.3) { crew.slice(0, crewCount).forEach((m, k) => { m.mode = 'jump'; jump(m, o => awayPos(m.k, o), 0.7, 6, 1, 1, () => { m.mode = 'away'; }, k * 0.04); }); state = 'out'; }
+    if (sy > 0.3) { speakQ = []; crew.slice(0, crewCount).forEach((m, k) => { m.mode = 'jump'; jump(m, o => awayPos(m.k, o), 0.7, 6, 1, 1, () => { m.mode = 'away'; }, k * 0.04); }); state = 'out'; }
     else if (now > peekUntil && crew.slice(0, crewCount).every(m => !m.tw)) { crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.06)); state = 'capping'; }
   }
 }
 
 // ---------- tips ----------
-const TIPS = [ // results, not tools: written for business owners
-  'Booked calls went from 2 to 3 a week to 13 to 15.',
-  'Email replies, built to go from 5 hours to 5 minutes.',
-  "A courier site that Google's AI answer points to first.",
-  '37 pages of guides, so new people stop asking around.',
-  'Hours back every week. Ask me how many for your team.',
-  'A person still approves anything important.',
+const DID = [ // things Gray did, in results an owner cares about (from the live site; keep them honest)
+  'I helped a coaching business go from 2 to 3 booked calls a week to 13 to 15.',
+  'I built a courier website that Google\'s AI answer pointed to first, days after launch.',
+  'I built and tested an email assistant that replies in minutes, not hours.',
+  'I wrote 37 pages of guides so a team could run things without me.',
+  'I built a lead clean-up so nobody on the team calls the same person twice.',
+  'I turned quick work notes into daily and weekly reports, ready to send.',
+  'I turned meetings into to-do lists with owners and due dates.',
+  'I built posts that get written and published on 4 platforms.',
 ];
-let tipMini = null, tipUntil = 0, tipN = 0;
-function say(m) { tipMini = m; tipUntil = now + 3.4; tipEl.textContent = TIPS[tipN++ % TIPS.length]; tipEl.classList.add('on'); }
+let tipMini = null, tipUntil = 0, tipN = 0, speakQ = [];
+function say(m) { tipMini = m; tipUntil = now + 2.6; tipEl.textContent = DID[tipN++ % DID.length]; tipEl.classList.add('on'); }
 function placeTip() {
   if (!tipMini) return;
   if (now > tipUntil || !tipMini.mesh.visible) { tipEl.classList.remove('on'); tipMini = null; return; }
@@ -382,7 +454,7 @@ document.documentElement.addEventListener('pointerleave', () => { mouse.in = fal
 
 let holdTimer = 0, didBlast = false;
 addEventListener('pointerdown', e => {
-  if (reduced || e.button !== 0 || e.pointerType === 'touch' || interactive(e.target) || state === 'build' || state === 'enter') return;
+  if (reduced || e.button !== 0 || e.pointerType === 'touch' || interactive(e.target) || !['done', 'peek', 'out', 'capping'].includes(state)) return;
   didBlast = false;
   holdTimer = setTimeout(() => { blasting = true; didBlast = true; }, 170);
 });
@@ -397,11 +469,17 @@ addEventListener('click', e => {
   const p = pick(e);
   if (!p) return;
   if (p.hat) {
-    if (reduced) { tipEl.textContent = TIPS[tipN++ % TIPS.length]; tipEl.classList.add('on'); setTimeout(() => tipEl.classList.remove('on'), 3400); return; }
+    if (reduced) { // no crew moving: the line shows above the hat instead
+      tipEl.textContent = DID[tipN++ % DID.length]; tipEl.classList.add('on');
+      const r = hatMesh.getWorldPosition(tmp).add(tmp2.set(0, 40 * figScale, 0)).project(camera);
+      tipEl.style.left = ((r.x + 1) / 2 * innerWidth) + 'px'; tipEl.style.top = ((1 - r.y) / 2 * innerHeight) + 'px';
+      setTimeout(() => tipEl.classList.remove('on'), 3400); return;
+    }
     crew.slice(0, crewCount).forEach((m, k) => fromHat(m, 'base', k * 0.04));
-    state = 'peek'; peekUntil = now + 5;
-    setTimeout(() => say(crew[p.k]), 850);
-  } else if (p.mini && !p.mini.tw) { p.mini.hop = now; say(p.mini); if (state === 'peek') peekUntil = now + 5; }
+    // three of them take turns saying what Gray did; the next click carries on through the list
+    speakQ = [0, 1, 2].map(j => ({ at: now + 0.9 + j * 2.7, k: (p.k + j * 3) % crewCount }));
+    state = 'peek'; peekUntil = now + 0.9 + 3 * 2.7;
+  } else if (p.mini && !p.mini.tw) { p.mini.hop = now; say(p.mini); if (state === 'peek') peekUntil = Math.max(peekUntil, now + 3); }
 });
 
 // ---------- loop ----------
@@ -419,6 +497,9 @@ function frame() {
   fig.updateMatrixWorld();
   writeBlocks(B, bodyMesh, now, dt);
   writeBlocks(H, hatMesh, now, dt);
+  writeBlocks(K, crateMesh, now, dt);
+  crateMesh.rotation.z = now < OPEN && state === 'page' ? Math.sin(now * 42) * 0.05 * (now / OPEN) : 0; // the crate shakes before it opens
+  while (speakQ.length && now >= speakQ[0].at) { const s = speakQ.shift(), m = crew[s.k]; if (m.mesh.visible) { m.hop = now; say(m); } }
   hatMesh.computeBoundingSphere(); bodyMesh.computeBoundingSphere();
   updateCrew(dt);
   stateStep();
