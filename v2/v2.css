@@ -79,11 +79,90 @@ main, .bar { position: relative; z-index: 1; }
 }
 @media (min-width: 760px) and (pointer: fine) { .hint { display: block; } }
 
-/* ---------- next section (placeholder until the crew builds it) ---------- */
-.next { min-height: 100svh; padding: 120px var(--pad); }
-.kicker { margin: 0 0 12px; font: 500 .8rem/1 var(--mono); letter-spacing: .02em; color: var(--accent); }
-.next h2 { margin: 0; max-width: 16ch; font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; }
-.next p { max-width: 50ch; color: var(--text-2); }
+/* ---------- sections (the crew builds each one as it scrolls into view) ---------- */
+.sec { max-width: 1240px; margin: 0 auto; padding: 140px var(--pad) 100px; }
+.kicker { margin: 0 0 14px; font: 500 .8rem/1 var(--mono); letter-spacing: .02em; color: var(--accent); }
+.sec h2 { margin: 0; max-width: 18ch; font-size: clamp(2.1rem, 4.6vw, 4rem); line-height: 1.04; letter-spacing: -0.035em; font-weight: 600; text-wrap: balance; }
+.sec h3 { margin: 0; font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; font-weight: 600; }
+.intro-p { max-width: 56ch; margin: 22px 0 0; color: var(--text-2); font-size: 1.05rem; }
+/* panels sit over the 3D stage; slightly see-through so a builder behind one still shows */
+.fixes li, .stats div, .case, .builds a, .xp li, .promise li, .clist a, .clist p { background: rgba(21, 27, 24, .86); border: 1px solid var(--edge); border-radius: 12px; }
+
+/* the missing word each section waits for: the crew jumps in and becomes it */
+.piece { display: inline-block; color: var(--accent); border-radius: 10px; }
+html.crew .piece:not(.filled) { color: transparent; outline: 2px dashed var(--edge); outline-offset: 2px; }
+html.crew .piece.filled { animation: pop .45s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes pop { from { transform: scale(.6); } to { transform: none; } }
+
+/* what I automate */
+.fixes { display: grid; gap: 14px; margin: 48px 0 0; padding: 0; list-style: none; }
+.fixes li { padding: 22px; display: grid; gap: 10px; align-content: start; }
+.fixes p { margin: 0; color: var(--text-2); font-size: .95rem; }
+.fixes .was { font: 500 .78rem/1.4 var(--mono); color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(140, 154, 146, .6); }
+.fixes .est { margin-top: auto; padding-top: 10px; border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); }
+.est b { font: 500 .95rem var(--mono); color: var(--accent); }
+.foot-note { margin: 22px 0 0; font-size: .88rem; color: var(--muted); }
+@media (min-width: 760px) { .fixes { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1100px) { .fixes { grid-template-columns: repeat(4, 1fr); } }
+
+/* results */
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 48px 0 0; }
+.stats div { padding: 22px; display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 8px; }
+.stats dd { margin: 0; font: 500 clamp(1.8rem, 3.6vw, 2.8rem)/1 var(--mono); letter-spacing: -0.03em; color: var(--accent); }
+.stats dt { font-size: .86rem; color: var(--text-2); }
+@media (min-width: 1000px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+.cases { display: grid; gap: 14px; margin-top: 14px; }
+.case { overflow: hidden; display: grid; }
+.case .pic { display: block; aspect-ratio: 16 / 9; overflow: hidden; background: #0A0D0B; border-bottom: 1px solid var(--edge); }
+.case .pic img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform .4s ease; }
+.case .pic:hover img { transform: scale(1.03); }
+.case .body { padding: 22px; display: grid; gap: 10px; align-content: start; }
+.case .body p { margin: 0; color: var(--text-2); font-size: .95rem; }
+.case .body .tag { justify-self: start; padding: 4px 12px; border: 1px solid var(--edge); border-radius: 999px; font: 500 .74rem var(--mono); color: var(--text-2); }
+.case .body .tag.on { border-color: rgba(63, 207, 142, .45); color: var(--accent); }
+.more { justify-self: start; min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-weight: 600; font-size: .92rem; }
+@media (min-width: 900px) { .cases { grid-template-columns: 1fr 1fr; } }
+.sec .list-h { margin-top: 56px; }
+.builds { display: grid; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.builds a { display: grid; gap: 4px; padding: 16px 20px; min-height: 44px; text-decoration: none; transition: border-color .2s ease; }
+.builds a:hover { border-color: var(--accent); }
+.builds b { font-weight: 600; }
+.builds span { font-size: .9rem; color: var(--text-2); }
+@media (min-width: 900px) { .builds { grid-template-columns: 1fr 1fr; } }
+
+/* about */
+.about { display: grid; gap: 32px; }
+.me { width: 100%; max-width: 360px; height: auto; border-radius: 12px; border: 1px solid var(--edge); display: block; }
+.xp { display: grid; gap: 10px; margin: 32px 0 0; padding: 0; list-style: none; }
+.xp li { padding: 18px 20px; }
+.xp .when { margin: 0 0 6px; font: 500 .76rem var(--mono); color: var(--muted); }
+.xp h3 span { display: block; margin-top: 2px; font-size: .88rem; font-weight: 500; color: var(--text-2); }
+.xp li > p:last-child { margin: 8px 0 0; font-size: .93rem; color: var(--text-2); }
+@media (min-width: 900px) { .about { grid-template-columns: minmax(240px, 360px) 1fr; gap: 56px; } .me { position: sticky; top: 100px; } }
+.promise { margin-top: 72px; }
+.promise ol { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; }
+.promise li { padding: 22px; color: var(--text-2); font-size: .95rem; }
+.promise b { display: block; margin-bottom: 6px; color: var(--text); font-size: 1.05rem; }
+@media (min-width: 900px) { .promise ol { grid-template-columns: repeat(3, 1fr); } }
+.tools { margin-top: 56px; }
+.tools p { margin: 0; color: var(--text-2); }
+.tools ul { display: flex; flex-wrap: wrap; gap: 18px; margin: 16px 0; padding: 0; list-style: none; }
+.tools img { display: block; opacity: .85; }
+.tools .also { font-size: .88rem; color: var(--muted); }
+
+/* contact */
+#contact { min-height: 90svh; }
+.note-sm { margin: 14px 0 0; font-size: .88rem; color: var(--muted); }
+.clist { display: grid; gap: 10px; margin: 40px 0 0; padding: 0; list-style: none; max-width: 720px; }
+.clist a, .clist p { display: grid; gap: 2px; margin: 0; padding: 14px 18px; min-height: 44px; text-decoration: none; transition: border-color .2s ease; }
+.clist a:hover { border-color: var(--accent); }
+.clist span { font: 500 .74rem var(--mono); color: var(--muted); }
+@media (min-width: 760px) { .clist { grid-template-columns: 1fr 1fr; } }
+.foot { position: relative; z-index: 1; padding: 28px var(--pad); border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); text-align: center; }
+
+/* until the crew gets there, a section's parts are hidden (html.crew is set by v2.js, never under reduced motion) */
+html.crew .sb:not(.built) { clip-path: inset(0 100% 0 0); }
+html.crew .sb.built { animation: build .55s steps(7, end) backwards; }
 
 /* ---------- speech bubble over a mini builder ---------- */
 .tip { position: fixed; left: 0; top: 0; z-index: 5; margin: 0; max-width: 24ch; padding: 10px 14px; border: 1px solid var(--edge); border-radius: 12px; background: var(--panel); color: var(--text); font-size: .88rem; line-height: 1.35; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); transition: opacity .2s ease; }

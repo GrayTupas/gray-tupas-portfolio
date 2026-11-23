@@ -299,26 +299,26 @@ function backOut(u) { const c = 1.9; return 1 + (c + 1) * Math.pow(u - 1, 3) + c
 function jump(m, toFn, dur, arc, s0, s1, after, delay = 0) {
   m.tw = { from: m.pos.clone(), toFn, t0: now + delay, dur, arc, s0, s1, after };
 }
-function awayPos(k, out) { // the crew stands at the top of the next section and rides along with it
-  const top = (innerHeight - scrollY) / innerHeight;
-  const fy = Math.min(0.95, Math.max(0.3, top + (mobile ? 0.1 : 0.16)));
-  const fx = mobile ? 0.14 + k * 0.18 : 0.56 + k * 0.05;
-  return screenToWorld(fx, fy, 10, out);
-}
 const hatCentreWorld = (k, out) => fig.localToWorld(out.copy(hatGroups[k].centre));
 
 function toHat(m, delay) {
   m.mode = 'jump';
-  jump(m, o => hatCentreWorld(m.k, o), 0.75, 12, 1, 0.25, () => {
+  jump(m, o => hatCentreWorld(m.k, o), 0.75, 12, m.s, 0.25, () => {
     m.mode = 'hat'; m.mesh.visible = false;
     hatGroups[m.k].ids.forEach((i, n) => { H[i].mode = 'pop'; H[i].t0 = now + n * 0.006; });
   }, delay);
 }
-function fromHat(m, dest, delay) {
-  hatGroups[m.k].ids.forEach(i => { if (H[i].mode !== 'hidden') { H[i].mode = 'shrink'; H[i].t0 = now + delay; } });
-  hatCentreWorld(m.k, m.pos);
-  m.mode = 'jump'; m.s = 0.25;
-  jump(m, o => dest === 'away' ? awayPos(m.k, o) : slotWorld(m.k, o), 0.8, 10, 0.25, 1, () => { m.mode = dest; }, delay);
+function fromHat(m, delay) {
+  launch(m, delay);
+  m.mode = 'jump';
+  jump(m, o => slotWorld(m.k, o), 0.8, 10, 0.25, 1, () => { m.mode = 'base'; }, delay);
+}
+function launch(m, delay = 0) { // a builder hidden in the hat or in a section's word comes out where it sits
+  if (m.mode === 'hat') {
+    hatGroups[m.k].ids.forEach(i => { if (H[i].mode !== 'hidden') { H[i].mode = 'shrink'; H[i].t0 = now + delay; } });
+    hatCentreWorld(m.k, m.pos); m.s = 0.25;
+  } else if (m.mode === 'piece') { piecePoint(sec, m.k, m.pos); m.s = 0.25; }
+  m.jobs = []; m.job = null; m.run = false;
 }
 
 // ---------- state ----------
@@ -343,18 +343,22 @@ function start() {
 // first visit: the crew is packed in a crate. It shakes, the lid pops, they jump out and build every part of the
 // page (each element is revealed block by block as a builder walks along it), then the figure, then the hat.
 const OPEN = 0.75;
-function elPoint(el, side, out) {
-  const r = el.getBoundingClientRect();
-  return screenToWorld((side ? r.right - 6 : r.left + 6) / innerWidth, Math.min(0.97, (r.bottom + 4) / innerHeight), 10, out);
+function elPoint(el, side, out) { // hero parts are built from below, section parts from on top
+  const r = el.getBoundingClientRect(), y = el.classList.contains('sb') ? r.top - 2 : r.bottom + 4;
+  return screenToWorld((side ? r.right - 6 : r.left + 6) / innerWidth, Math.min(0.97, Math.max(0.08, y / innerHeight)), 10, out);
 }
 function nextJob(m) {
   const el = m.jobs.shift();
   m.job = el || null; // what this builder is looking at
+  if (!el && state === 'sec') { intoPiece(m); return; }
   if (!el) { m.mode = 'jump'; jump(m, o => slotWorld(m.k, o), 0.7, 8, 1, 1, () => { m.mode = 'base'; }); return; }
-  jump(m, o => elPoint(el, 0, o), 0.45, 3, 1, 1, () => {
-    el.classList.add('built'); m.run = true;
-    jump(m, o => elPoint(el, 1, o), 0.55, 0, 1, 1, () => { m.run = false; nextJob(m); });
-  });
+  const build = () => { // the reveal keeps pace with the builder walking along it: wider parts take longer
+    const dur = Math.min(1.4, Math.max(0.55, el.getBoundingClientRect().width / 700));
+    el.style.animationDuration = dur + 's'; el.classList.add('built'); m.run = true;
+    jump(m, o => elPoint(el, 1, o), dur, 0, 1, 1, () => { m.run = false; nextJob(m); });
+  };
+  if (m.pos.distanceTo(elPoint(el, 0, tmp)) < 0.5) build(); // already standing at its start
+  else jump(m, o => elPoint(el, 0, o), 0.45, 3, 1, 1, build);
 }
 function intro() {
   K.forEach(b => { b.mode = 'set'; b.s = 1; });
@@ -385,7 +389,53 @@ function finishNow() { // reduced motion, or "Skip intro": everything finished, 
   crew.forEach(m => { m.mode = 'hat'; m.tw = null; m.run = false; m.mesh.visible = false; });
   state = 'done';
 }
+// ---------- the other sections: on scroll the crew leaves the hat, builds the section in view, then jumps into
+// its missing word (.piece) and becomes it. Scrolling back up sends them back to the hat.
+const SECS = [...document.querySelectorAll('main > section')]; // [hero, ...sections]
+const PIECES = SECS.map(s => s.querySelector('.piece'));
+const done = SECS.map((s, i) => i === 0);
+let sec = 0; // where the crew is: 0 = the hat, otherwise that section's word
+function targetSec() { let t = 0; for (let i = 1; i < SECS.length; i++) if (SECS[i].getBoundingClientRect().top < innerHeight * 0.5) t = i; return t; }
+function reveal(i) { // finished at once: skipped on the way, left early, or reached by keyboard
+  if (done[i]) return;
+  done[i] = true;
+  SECS[i].querySelectorAll('.sb').forEach(el => el.classList.add('built'));
+  if (PIECES[i]) PIECES[i].classList.add('filled');
+}
+function piecePoint(i, k, out) {
+  const r = PIECES[i].getBoundingClientRect();
+  return screenToWorld((r.left + (k + 0.5) / crewCount * r.width) / innerWidth, Math.min(0.97, Math.max(0.08, (r.bottom - r.height * 0.2) / innerHeight)), 10, out);
+}
+const byPos = (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left;
+function goSection(i) {
+  for (let j = 1; j < i; j++) reveal(j);
+  if (sec > 0) reveal(sec);
+  const team = crew.slice(0, crewCount);
+  team.forEach(m => launch(m));
+  if (!done[i]) [...SECS[i].querySelectorAll('.sb')].filter(el => el.getClientRects().length).sort(byPos).forEach((el, j) => team[j % crewCount].jobs.push(el));
+  team.forEach((m, k) => {
+    m.mode = 'jump';
+    jump(m, o => m.jobs.length ? elPoint(m.jobs[0], 0, o) : piecePoint(i, k, o), 0.7, 10, m.s, 1, () => nextJob(m), k * 0.04);
+  });
+  speakQ = []; sec = i; state = 'sec';
+}
+function intoPiece(m) {
+  const i = sec;
+  m.mode = 'jump';
+  jump(m, o => piecePoint(i, m.k, o), 0.6, 6, 1, 0.25, () => {
+    m.mode = 'piece';
+    if (crew.slice(0, crewCount).every(c => c.mode === 'piece')) reveal(i);
+  });
+}
+function backToHat() {
+  if (sec > 0) reveal(sec);
+  crew.slice(0, crewCount).forEach((m, k) => { launch(m); toHat(m, k * 0.05); });
+  sec = 0; state = 'capping';
+}
+addEventListener('focusin', e => { const i = SECS.indexOf(e.target.closest && e.target.closest('main > section')); if (i > 0) reveal(i); });
+
 if (reduced) finishNow(); else if (root.classList.contains('intro')) intro(); else start();
+if (!reduced) root.classList.add('crew'); // sections stay hidden until the crew builds them
 const skipBtn = document.querySelector('.skip-intro');
 if (skipBtn) skipBtn.addEventListener('click', finishNow);
 
@@ -400,7 +450,7 @@ function pose(m, dt, moving, jumping) {
   } else if (moving || m.run) { // walking or running; while building the page they hammer as they go
     const s = Math.sin(t * 17);
     T.legL = s * 0.9; T.legR = -s * 0.9; T.armL = -s * 0.8; T.armR = s * 0.8; T.lean = 0.12;
-    if (state === 'page' && m.run) T.armR = -1.4 + Math.sin(t * 26) * 1.1;
+    if ((state === 'page' || state === 'sec') && m.run) T.armR = -1.4 + Math.sin(t * 26) * 1.1;
   } else { // standing: something different every few seconds, never all in sync
     if (now > m.nextAct) {
       const [a, d] = ACTS[Math.floor(Math.random() * ACTS.length)];
@@ -435,7 +485,7 @@ function updateCrew(dt) {
   screenToWorld((mouse.x + 1) / 2, (1 - mouse.y) / 2, 10, cursor);
   for (let k = 0; k < crewCount; k++) {
     const m = crew[k];
-    if (m.mode === 'hat' || m.mode === 'wait') { m.mesh.visible = false; continue; }
+    if (m.mode === 'hat' || m.mode === 'wait' || m.mode === 'piece') { m.mesh.visible = false; continue; }
     m.mesh.visible = true;
     let bob = 0, moving = false, jumping = false;
     if (m.tw && now >= m.tw.t0) {
@@ -447,7 +497,6 @@ function updateCrew(dt) {
       if (m.run) bob = Math.abs(Math.sin(now * 16)) * 0.9;
       if (u >= 1) { m.tw = null; t.after && t.after(); }
     } else if (m.mode === 'base') slotWorld(k, m.pos);
-    else if (m.mode === 'away') awayPos(k, m.pos);
     // look at the cursor, step aside when it gets close
     const dx = cursor.x - m.pos.x, near = mouse.in && Math.hypot(dx, cursor.y - (m.pos.y + 2)) < 3.2;
     const away = m.mode === 'base' ? Math.sign(slots[k].x) : -Math.sign(dx || 1); // next to him, always step outwards
@@ -459,7 +508,7 @@ function updateCrew(dt) {
       const r = m.job.getBoundingClientRect();
       screenToWorld((r.left + r.right) / 2 / innerWidth, (r.top + r.bottom) / 2 / innerHeight, 10, lookV);
       faceT = THREE.MathUtils.clamp((lookV.x - m.pos.x) * 0.12, -1.3, 1.3);
-      m.pitch = -0.55;
+      m.pitch = m.job.classList.contains('sb') ? 0.35 : -0.55; // down at a section part, up at hero text
     } else if (state === 'build' && m.look && m.mode === 'base') {
       fig.localToWorld(lookV.copy(m.look));
       const hx = lookV.x - m.pos.x, hz = lookV.z - m.pos.z;
@@ -471,7 +520,7 @@ function updateCrew(dt) {
     m.face += (faceT - m.face) * Math.min(1, dt * 6);
     const hop = now - m.hop < 0.5 ? Math.sin(Math.PI * (now - m.hop) / 0.5) * 2.6 : 0;
     const thr = m.throwT && now - m.throwT < 0.25 ? Math.sin(Math.PI * (now - m.throwT) / 0.25) * 0.5 : 0;
-    m.mesh.position.set(m.pos.x + (m.mode === 'base' || m.mode === 'away' ? m.dodge : 0), m.pos.y + bob + hop + thr, m.pos.z);
+    m.mesh.position.set(m.pos.x + (m.mode === 'base' ? m.dodge : 0), m.pos.y + bob + hop + thr, m.pos.z);
     const lean = pose(m, dt, moving, jumping);
     m.mesh.rotation.set(lean, m.face + m.spin, -m.dodge * 0.08);
     m.mesh.scale.setScalar(MINI * crewScale * m.s);
@@ -479,7 +528,8 @@ function updateCrew(dt) {
 }
 
 function stateStep() {
-  const sy = scrollY / innerHeight;
+  const t = reduced ? 0 : targetSec();
+  if (t > 0 && sec === 0 && ['page', 'build', 'capping'].includes(state)) { finishNow(); return; } // scrolled on during the intro: skip it
   if (state === 'page' && crew.slice(0, crewCount).every(m => m.mode === 'base' && !m.tw)) { // the page is built: now the figure
     endIntro();
     scheduleGray(now + 0.15, 2.3);
@@ -488,12 +538,8 @@ function stateStep() {
     crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.08));
     state = 'capping';
   } else if (state === 'capping' && crew.slice(0, crewCount).every(m => m.mode === 'hat')) state = 'done';
-  else if (state === 'done' && sy > 0.3 && !reduced) { crew.slice(0, crewCount).forEach((m, k) => fromHat(m, 'away', k * 0.05)); state = 'out'; }
-  else if (state === 'out' && sy < 0.15 && crew.slice(0, crewCount).every(m => !m.tw)) { crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.05)); state = 'capping'; }
-  else if (state === 'peek') {
-    if (sy > 0.3) { speakQ = []; crew.slice(0, crewCount).forEach((m, k) => { m.mode = 'jump'; jump(m, o => awayPos(m.k, o), 0.7, 6, 1, 1, () => { m.mode = 'away'; }, k * 0.04); }); state = 'out'; }
-    else if (now > peekUntil && crew.slice(0, crewCount).every(m => !m.tw)) { crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.06)); state = 'capping'; }
-  }
+  else if (state === 'peek' && now > peekUntil && crew.slice(0, crewCount).every(m => !m.tw)) { crew.slice(0, crewCount).forEach((m, k) => toHat(m, k * 0.06)); state = 'capping'; }
+  if (['done', 'peek', 'sec'].includes(state) && t !== sec) { if (t === 0) backToHat(); else goSection(t); }
 }
 
 // ---------- tips ----------
@@ -537,7 +583,7 @@ document.documentElement.addEventListener('pointerleave', () => { mouse.in = fal
 
 let holdTimer = 0, didBlast = false;
 addEventListener('pointerdown', e => {
-  if (reduced || e.button !== 0 || e.pointerType === 'touch' || interactive(e.target) || !['done', 'peek', 'out', 'capping'].includes(state)) return;
+  if (reduced || e.button !== 0 || e.pointerType === 'touch' || interactive(e.target) || !['done', 'peek', 'capping'].includes(state) || sec !== 0) return;
   didBlast = false;
   holdTimer = setTimeout(() => { blasting = true; didBlast = true; }, 170);
 });
@@ -558,7 +604,7 @@ addEventListener('click', e => {
       tipEl.style.left = ((r.x + 1) / 2 * innerWidth) + 'px'; tipEl.style.top = ((1 - r.y) / 2 * innerHeight) + 'px';
       setTimeout(() => tipEl.classList.remove('on'), 3400); return;
     }
-    crew.slice(0, crewCount).forEach((m, k) => fromHat(m, 'base', k * 0.04));
+    crew.slice(0, crewCount).forEach((m, k) => fromHat(m, k * 0.04));
     // three of them take turns saying what Gray did; the next click carries on through the list
     speakQ = [0, 1, 2].map(j => ({ at: now + 0.9 + j * 2.7, k: (p.k + j * 3) % crewCount }));
     state = 'peek'; peekUntil = now + 0.9 + 3 * 2.7;
