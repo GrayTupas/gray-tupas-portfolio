@@ -188,7 +188,7 @@ function makeMini(m) {
 }
 
 // ---------- layout ----------
-let figScale = 1, figX = 0, camY = 19, unitsPerPx = 0.1, mobile = false;
+let figScale = 1, crewScale = 1, figX = 0, camY = 19, unitsPerPx = 0.1, mobile = false;
 const slots = []; // where each builder stands, in the big figure's local space
 function layout() {
   const w = innerWidth, h = innerHeight;
@@ -196,8 +196,9 @@ function layout() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  figScale = mobile ? 0.55 : 0.86;
-  camY = mobile ? 27 : 22; // phones: feet just above the bottom edge, head below the buttons
+  figScale = mobile ? 0.58 : 1.08;  // the big Gray
+  crewScale = mobile ? 0.55 : 0.86; // the builders keep their own size
+  camY = mobile ? 26 : 21.5; // feet just above the bottom row; on phones the head stays below the buttons
   figX = mobile ? 0 : Math.min(14, 6 * camera.aspect); // a little right of centre, clear of the headline
   camera.position.set(0, camY, CAM_Z); camera.lookAt(0, camY, 0);
   camera.updateProjectionMatrix();
@@ -210,13 +211,13 @@ function layout() {
     while (crew.length < crewCount) crew.push(makeMini({ pos: new THREE.Vector3(), mode: 'wait', s: 1, tw: null, hop: -9, dodge: 0, face: 0, k: crew.length, act: 'breathe', actT: 0, nextAct: 1 + Math.random() * 2, spin: 0 }));
   }
   slots.length = 0;
-  const span = mobile ? 15 : 18;
-  for (let k = 0; k < crewCount; k++) slots.push(new THREE.Vector3(-span + (2 * span) * k / (crewCount - 1), 0, 9 + (k % 2) * 2));
+  const span = mobile ? 15 : 14; // in the big figure's space, so it grows with him
+  for (let k = 0; k < crewCount; k++) slots.push(new THREE.Vector3(-span + (2 * span) * k / (crewCount - 1), 0, 2 + (k % 2) * 2)); // beside his feet, clear of the bottom row
 }
 layout();
 addEventListener('resize', layout);
 
-const tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), q = new THREE.Quaternion(), mat = new THREE.Matrix4(), one = new THREE.Vector3(1, 1, 1).normalize();
+const tmp = new THREE.Vector3(), tmp2 = new THREE.Vector3(), lookV = new THREE.Vector3(), q = new THREE.Quaternion(), mat = new THREE.Matrix4(), one = new THREE.Vector3(1, 1, 1).normalize();
 function screenToWorld(fx, fy, planeZ, out) {
   out.set(fx * 2 - 1, -(fy * 2 - 1), 0.5).unproject(camera).sub(camera.position).normalize();
   const t = (planeZ - camera.position.z) / out.z;
@@ -253,7 +254,7 @@ function writeBlocks(list, mesh, now, dt) {
   for (let i = 0; i < list.length; i++) {
     const b = list[i];
     switch (b.mode) {
-      case 'wait': b.s = 0; if (state === 'build' && now >= b.t) { const m = crew[b.who % crewCount]; fig.worldToLocal(b.from.copy(m.pos).add(tmp.set(0, 4.5 * figScale, 0))); b.mode = 'fly'; b.t0 = now; m.throwT = now; } break;
+      case 'wait': b.s = 0; if (state === 'build' && now >= b.t) { const m = crew[b.who % crewCount]; fig.worldToLocal(b.from.copy(m.pos).add(tmp.set(0, 4.5 * crewScale, 0))); b.mode = 'fly'; b.t0 = now; m.throwT = now; m.look = b.target; } break;
       case 'fly': {
         const u = Math.min(1, (now - b.t0) / 0.6), e = 1 - Math.pow(1 - u, 3);
         b.pos.lerpVectors(b.from, b.target, e); b.pos.y += Math.sin(Math.PI * u) * b.arc;
@@ -344,6 +345,7 @@ function elPoint(el, side, out) {
 }
 function nextJob(m) {
   const el = m.jobs.shift();
+  m.job = el || null; // what this builder is looking at
   if (!el) { m.mode = 'jump'; jump(m, o => slotWorld(m.k, o), 0.7, 8, 1, 1, () => { m.mode = 'base'; }); return; }
   jump(m, o => elPoint(el, 0, o), 0.45, 3, 1, 1, () => {
     el.classList.add('built'); m.run = true;
@@ -413,6 +415,7 @@ function pose(m, dt, moving, jumping) {
     }
     if (!on || m.act !== 'spin') m.spin = 0;
   }
+  if (m.pitch) { T.headX = m.pitch; T.headY = 0; } // eyes on the work
   if (m.throwT && now - m.throwT < 0.3) T.armR = -2.6 + (now - m.throwT) / 0.3 * 3.2; // throwing a block
   if (tipMini === m) { T.armLz = -2.5 + Math.sin(now * 12) * 0.35; T.headX = Math.sin(now * 9) * 0.12; } // waves while talking
   const k = 1 - Math.exp(-dt * 16), a = m.ang;
@@ -444,13 +447,29 @@ function updateCrew(dt) {
     // look at the cursor, step aside when it gets close
     const dx = cursor.x - m.pos.x, near = mouse.in && Math.hypot(dx, cursor.y - (m.pos.y + 2)) < 3.2;
     m.dodge += ((near ? -Math.sign(dx || 1) * 3 : 0) - m.dodge) * Math.min(1, dt * 8);
-    m.face += ((mouse.in ? THREE.MathUtils.clamp(dx * 0.08, -1.1, 1.1) : 0) - m.face) * Math.min(1, dt * 6);
+    // look at the work: the text being built, or the block just thrown at the big figure; otherwise the cursor
+    let faceT = mouse.in ? THREE.MathUtils.clamp(dx * 0.08, -1.1, 1.1) : 0;
+    m.pitch = 0;
+    if (m.job) {
+      const r = m.job.getBoundingClientRect();
+      screenToWorld((r.left + r.right) / 2 / innerWidth, (r.top + r.bottom) / 2 / innerHeight, 10, lookV);
+      faceT = THREE.MathUtils.clamp((lookV.x - m.pos.x) * 0.12, -1.3, 1.3);
+      m.pitch = -0.55;
+    } else if (state === 'build' && m.look && m.mode === 'base') {
+      fig.localToWorld(lookV.copy(m.look));
+      const hx = lookV.x - m.pos.x, hz = lookV.z - m.pos.z;
+      faceT = Math.atan2(hx, hz);
+      m.pitch = -THREE.MathUtils.clamp(Math.atan2(lookV.y - m.pos.y - 3, Math.hypot(hx, hz)), -0.3, 0.9);
+    }
+    while (faceT - m.face > Math.PI) faceT -= Math.PI * 2; // turn the short way round
+    while (faceT - m.face < -Math.PI) faceT += Math.PI * 2;
+    m.face += (faceT - m.face) * Math.min(1, dt * 6);
     const hop = now - m.hop < 0.5 ? Math.sin(Math.PI * (now - m.hop) / 0.5) * 2.6 : 0;
     const thr = m.throwT && now - m.throwT < 0.25 ? Math.sin(Math.PI * (now - m.throwT) / 0.25) * 0.5 : 0;
     m.mesh.position.set(m.pos.x + (m.mode === 'base' || m.mode === 'away' ? m.dodge : 0), m.pos.y + bob + hop + thr, m.pos.z);
     const lean = pose(m, dt, moving, jumping);
     m.mesh.rotation.set(lean, m.face + m.spin, -m.dodge * 0.08);
-    m.mesh.scale.setScalar(MINI * figScale * m.s);
+    m.mesh.scale.setScalar(MINI * crewScale * m.s);
   }
 }
 
@@ -488,7 +507,7 @@ function say(m) { tipMini = m; tipUntil = now + 2.6; tipEl.textContent = DID[tip
 function placeTip() {
   if (!tipMini) return;
   if (now > tipUntil || !tipMini.mesh.visible) { tipEl.classList.remove('on'); tipMini = null; return; }
-  tmp.copy(tipMini.mesh.position); tmp.y += 6 * figScale; tmp.project(camera);
+  tmp.copy(tipMini.mesh.position); tmp.y += 6 * crewScale; tmp.project(camera);
   tipEl.style.left = ((tmp.x + 1) / 2 * innerWidth) + 'px';
   tipEl.style.top = ((1 - tmp.y) / 2 * innerHeight - 8) + 'px';
 }
