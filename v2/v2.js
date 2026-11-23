@@ -90,7 +90,12 @@ function miniGray() {
   box(-3, 3, 11, 11, -3, 3, (x, y, z) => (Math.abs(x) === 3 && Math.abs(z) === 3) ? null : C.hatD);
   box(-2, 2, 12, 13, -2, 2, (x, y, z) => (y === 13 && Math.abs(x) === 2 && Math.abs(z) === 2) ? null : C.hat);
   for (const [k, c] of m) if (!c) m.delete(k);
-  return hollow(m);
+  // split into parts that can move on their own
+  const part = v => v.y >= 7 ? 'head' : v.x === -3 ? 'armL' : v.x === 3 ? 'armR' : v.y <= 2 ? (v.x < 0 ? 'legL' : 'legR') : 'body';
+  const list = hollow(m).map(v => ({ ...v, part: part(v) }));
+  // a hammer in the right hand: handle pointing forward, head at the end
+  [[3, 3, 1, '#8A6239'], [3, 3, 2, '#8A6239'], [3, 2, 3, '#7E8A84'], [3, 3, 3, '#7E8A84'], [3, 4, 3, '#7E8A84']].forEach(([x, y, z, c]) => list.push({ x, y, z, c, part: 'armR' }));
+  return list;
 }
 
 // ---------- scene ----------
@@ -162,13 +167,24 @@ const miniList = miniGray();
 const MINI = 0.34;
 let crewCount = 8;
 const crew = [];
-function makeMini() {
-  const mesh = instanced(miniList, new THREE.MeshStandardMaterial({ roughness: 0.7 }));
-  const mat = new THREE.Matrix4();
-  miniList.forEach((v, i) => mesh.setMatrixAt(i, mat.makeTranslation(v.x, v.y, v.z)));
-  mesh.instanceMatrix.needsUpdate = true;
-  scene.add(mesh);
-  return mesh;
+// each builder is a group of parts, each hung on its joint (hip, shoulder, neck) so it can swing
+const PIV = { body: [0, 0, 0], legL: [-1.5, 2.5, 0], legR: [1.5, 2.5, 0], armL: [-3, 6.5, 0], armR: [3, 6.5, 0], head: [0, 6.5, 0] };
+const miniMat = new THREE.MeshStandardMaterial({ roughness: 0.7 });
+function makeMini(m) {
+  const g = new THREE.Group(), parts = {}, mx = new THREE.Matrix4();
+  for (const name in PIV) {
+    const list = miniList.filter(v => v.part === name), p = PIV[name];
+    const mesh = instanced(list, miniMat);
+    list.forEach((v, i) => mesh.setMatrixAt(i, mx.makeTranslation(v.x - p[0], v.y - p[1], v.z - p[2])));
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.userData.mini = m; // for clicks
+    const pivot = new THREE.Group();
+    pivot.position.set(p[0], p[1], p[2]); pivot.add(mesh); g.add(pivot);
+    parts[name] = pivot;
+  }
+  scene.add(g);
+  m.mesh = g; m.parts = parts; m.ang = {};
+  return m;
 }
 
 // ---------- layout ----------
@@ -191,7 +207,7 @@ function layout() {
   fig.updateMatrixWorld();
   if (!crew.length) { // the crew size is fixed on first load; the hat is split for it
     crewCount = mobile ? 5 : 8;
-    while (crew.length < crewCount) crew.push({ mesh: makeMini(), pos: new THREE.Vector3(), mode: 'wait', s: 1, tw: null, hop: -9, dodge: 0, face: 0, k: crew.length });
+    while (crew.length < crewCount) crew.push(makeMini({ pos: new THREE.Vector3(), mode: 'wait', s: 1, tw: null, hop: -9, dodge: 0, face: 0, k: crew.length, act: 'breathe', actT: 0, nextAct: 1 + Math.random() * 2, spin: 0 }));
   }
   slots.length = 0;
   const span = mobile ? 15 : 18;
@@ -367,15 +383,57 @@ if (reduced) finishNow(); else if (root.classList.contains('intro')) intro(); el
 const skipBtn = document.querySelector('.skip-intro');
 if (skipBtn) skipBtn.addEventListener('click', finishNow);
 
+// ---------- builder body language ----------
+// angles are radians on each joint. Arm x < 0 swings forward and up, arm z raises it out to the side.
+const ACTS = [['look', 1.8], ['wave', 1.6], ['hammer', 2.2], ['stretch', 1.4], ['tap', 1.4], ['hop', 0.6], ['spin', 0.8], ['hammer', 1.8], ['breathe', 2]];
+function pose(m, dt, moving, jumping) {
+  const T = { legL: 0, legR: 0, armL: 0, armR: 0, armLz: 0, armRz: 0, headX: 0, headY: 0, lean: 0 };
+  const t = now + m.k * 0.37;
+  if (jumping) { // arms up, knees tucked
+    T.armL = T.armR = -2.7; T.legL = -0.7; T.legR = 0.4;
+  } else if (moving || m.run) { // walking or running; while building the page they hammer as they go
+    const s = Math.sin(t * 17);
+    T.legL = s * 0.9; T.legR = -s * 0.9; T.armL = -s * 0.8; T.armR = s * 0.8; T.lean = 0.12;
+    if (state === 'page' && m.run) T.armR = -1.4 + Math.sin(t * 26) * 1.1;
+  } else { // standing: something different every few seconds, never all in sync
+    if (now > m.nextAct) {
+      const [a, d] = ACTS[Math.floor(Math.random() * ACTS.length)];
+      m.act = a; m.actT = now; m.nextAct = now + d + 0.6 + Math.random() * 2.2;
+      if (a === 'hop') m.hop = now;
+    }
+    const u = now - m.actT, on = now < m.nextAct - 0.6;
+    T.headX = Math.sin(t * 2.2) * 0.05; T.armL = Math.sin(t * 2.2) * 0.06; T.armR = -Math.sin(t * 2.2) * 0.06;
+    if (on) switch (m.act) {
+      case 'look': T.headY = Math.sin(u * 2.4) * 0.9; break;
+      case 'wave': T.armLz = -2.5 + Math.sin(u * 13) * 0.4; break;
+      case 'hammer': T.armR = -2.1 + (0.5 + 0.5 * Math.sin(u * 15)) * 2.2; T.lean = 0.18; T.headX = 0.3; break;
+      case 'stretch': T.armLz = -2.9; T.armRz = 2.9; T.headX = -0.35; break;
+      case 'tap': T.legR = -Math.abs(Math.sin(u * 14)) * 0.45; T.armL = 0; T.armLz = -0.4; break;
+      case 'spin': m.spin = Math.min(1, u / 0.8) * Math.PI * 2; break;
+    }
+    if (!on || m.act !== 'spin') m.spin = 0;
+  }
+  if (m.throwT && now - m.throwT < 0.3) T.armR = -2.6 + (now - m.throwT) / 0.3 * 3.2; // throwing a block
+  if (tipMini === m) { T.armLz = -2.5 + Math.sin(now * 12) * 0.35; T.headX = Math.sin(now * 9) * 0.12; } // waves while talking
+  const k = 1 - Math.exp(-dt * 16), a = m.ang;
+  for (const key in T) a[key] = (a[key] ?? 0) + (T[key] - (a[key] ?? 0)) * k;
+  m.parts.legL.rotation.x = a.legL; m.parts.legR.rotation.x = a.legR;
+  m.parts.armL.rotation.set(a.armL, 0, a.armLz); m.parts.armR.rotation.set(a.armR, 0, a.armRz);
+  m.parts.head.rotation.set(a.headX, a.headY, 0);
+  m.parts.body.scale.y = 1 + Math.sin(t * 2.4) * 0.025; // breathing
+  return a.lean;
+}
+
 function updateCrew(dt) {
   screenToWorld((mouse.x + 1) / 2, (1 - mouse.y) / 2, 10, cursor);
   for (let k = 0; k < crewCount; k++) {
     const m = crew[k];
     if (m.mode === 'hat' || m.mode === 'wait') { m.mesh.visible = false; continue; }
     m.mesh.visible = true;
-    let bob = 0;
+    let bob = 0, moving = false, jumping = false;
     if (m.tw && now >= m.tw.t0) {
       const t = m.tw, u = Math.min(1, (now - t.t0) / t.dur), e = u * u * (3 - 2 * u);
+      moving = true; jumping = t.arc > 0.5;
       t.toFn(tmp);
       m.pos.lerpVectors(t.from, tmp, e); m.pos.y += Math.sin(Math.PI * u) * t.arc;
       m.s = t.s0 + (t.s1 - t.s0) * e;
@@ -390,7 +448,8 @@ function updateCrew(dt) {
     const hop = now - m.hop < 0.5 ? Math.sin(Math.PI * (now - m.hop) / 0.5) * 2.6 : 0;
     const thr = m.throwT && now - m.throwT < 0.25 ? Math.sin(Math.PI * (now - m.throwT) / 0.25) * 0.5 : 0;
     m.mesh.position.set(m.pos.x + (m.mode === 'base' || m.mode === 'away' ? m.dodge : 0), m.pos.y + bob + hop + thr, m.pos.z);
-    m.mesh.rotation.y = m.face;
+    const lean = pose(m, dt, moving, jumping);
+    m.mesh.rotation.set(lean, m.face + m.spin, -m.dodge * 0.08);
     m.mesh.scale.setScalar(MINI * figScale * m.s);
   }
 }
@@ -441,10 +500,10 @@ function pick(e) {
   ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   ray.setFromCamera(ndc, camera);
   const minis = crew.slice(0, crewCount).filter(m => m.mesh.visible).map(m => m.mesh);
-  const hit = ray.intersectObjects(state === 'done' ? [...minis, hatMesh] : minis, false)[0];
+  const hit = ray.intersectObjects(state === 'done' ? [...minis, hatMesh] : minis, true)[0];
   if (!hit) return null;
   if (hit.object === hatMesh) return { hat: true, k: H[hit.instanceId].who };
-  return { mini: crew.find(m => m.mesh === hit.object) };
+  return { mini: hit.object.userData.mini };
 }
 addEventListener('pointermove', e => {
   mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = -(e.clientY / innerHeight) * 2 + 1; mouse.in = e.pointerType !== 'touch';
@@ -486,7 +545,7 @@ addEventListener('click', e => {
 const clock = new THREE.Clock();
 let rotY = -0.3, rotX = 0;
 function frame() {
-  const dt = Math.min(clock.getDelta(), 0.05);
+  const dt = Math.min(clock.getDelta(), 0.1); // keeps real-time pace down to 10 fps; bigger gaps (tab hidden) just pause
   now += dt;
   fig.position.y = scrollY * unitsPerPx + (reduced ? 0 : Math.sin(now * 1.3) * 0.25 * figScale);
   if (!reduced) {
