@@ -80,7 +80,7 @@ main, .bar { position: relative; z-index: 1; }
 @media (min-width: 760px) and (pointer: fine) { .hint { display: block; } }
 
 /* ---------- sections (the crew builds each one as it scrolls into view) ---------- */
-.sec { padding: 120px var(--pad) 40px; scroll-margin-top: 0; } /* same left edge as the hero */
+.sec { min-height: 100svh; padding: 120px var(--pad) 80px; } /* one screen per section, so the next one never shows early; same left edge as the hero */
 .kicker { margin: 0 0 14px; font: 500 .8rem/1 var(--mono); letter-spacing: .02em; color: var(--accent); }
 .sec h2 { margin: 0; max-width: 18ch; font-size: clamp(2.1rem, 4.6vw, 4rem); line-height: 1.04; letter-spacing: -0.035em; font-weight: 600; text-wrap: balance; }
 .sec h3 { margin: 0; font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; font-weight: 600; }
@@ -151,7 +151,7 @@ html.crew .piece.held { color: transparent; } /* the crew is the word right now,
 .tools .also { font-size: .88rem; color: var(--muted); }
 
 /* contact */
-#contact { min-height: 90svh; }
+
 .note-sm { margin: 14px 0 0; font-size: .88rem; color: var(--muted); }
 .clist { display: grid; gap: 10px; margin: 40px 0 0; padding: 0; list-style: none; max-width: 720px; }
 .clist a, .clist p { display: grid; gap: 2px; margin: 0; padding: 14px 18px; min-height: 44px; text-decoration: none; transition: border-color .2s ease; }

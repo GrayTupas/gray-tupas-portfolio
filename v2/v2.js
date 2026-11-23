@@ -407,15 +407,11 @@ const taken = new Set();
 const byPos = (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left;
 function targetSec() { let t = 0; for (let i = 1; i < SECS.length; i++) if (SECS[i].getBoundingClientRect().top < innerHeight * 0.5) t = i; return t; }
 function pieceOnScreen(i) { const r = PIECES[i].getBoundingClientRect(); return r.top > 80 && r.bottom < innerHeight - 20; }
-function openJobs() { // unbuilt parts on screen that nobody is on yet
+function openJobs(t) { // unbuilt parts of the section in view, on screen, that nobody is on yet (never the next section peeking in)
   const out = [];
-  for (let i = 1; i < SECS.length; i++) {
-    const r = SECS[i].getBoundingClientRect();
-    if (r.bottom < 0 || r.top > innerHeight) continue;
-    for (const el of SECS[i].querySelectorAll('.sb:not(.built)')) {
-      const q = el.getBoundingClientRect();
-      if (!taken.has(el) && q.height && q.bottom > 90 && q.top < innerHeight - 50) out.push(el);
-    }
+  for (const el of SECS[t].querySelectorAll('.sb:not(.built)')) {
+    const q = el.getBoundingClientRect();
+    if (!taken.has(el) && q.height && q.bottom > 90 && q.top < innerHeight - 50) out.push(el);
   }
   return out.sort(byPos);
 }
@@ -521,7 +517,7 @@ function direct(t) {
     return;
   }
   if (state !== 'sec' || word.phase === 'in' || word.phase === 'out') return;
-  const jobs = t > 0 ? openJobs() : [];
+  const jobs = t > 0 ? openJobs(t) : [];
   if (word.phase === 'held') {
     if (settled && (t === 0 || jobs.length || (t !== word.i && pieceOnScreen(t)))) morphOut();
     return;
