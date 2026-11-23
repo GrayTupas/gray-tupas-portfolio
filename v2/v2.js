@@ -6,6 +6,7 @@ import * as THREE from 'three';
 const canvas = document.getElementById('stage');
 const tipEl = document.querySelector('.tip');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const CASE = document.body.classList.contains('case'); // case-study pages: no big figure or hat, just the crew building
 
 // ---------- colours (emerald is the only accent) ----------
 const C = {
@@ -111,7 +112,7 @@ scene.add(new THREE.HemisphereLight('#DFE9E3', '#0D110F', 1.6));
 const sun = new THREE.DirectionalLight('#FFFFFF', 2.4); sun.position.set(30, 60, 50); scene.add(sun);
 const rim = new THREE.DirectionalLight('#3FCF8E', 2.2); rim.position.set(-40, 30, -50); scene.add(rim);
 
-const fig = new THREE.Group(); scene.add(fig); // the big Gray: feet at y = 0
+const fig = new THREE.Group(); scene.add(fig); fig.visible = !CASE; // the big Gray: feet at y = 0
 const cube = new THREE.BoxGeometry(0.94, 0.94, 0.94);
 const { body, hat } = bigGray();
 
@@ -406,7 +407,7 @@ const PIECES = SECS.map(s => s.querySelector('.piece'));
 const taken = new Set();
 const byPos = (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top || a.getBoundingClientRect().left - b.getBoundingClientRect().left;
 function targetSec() { let t = 0; for (let i = 1; i < SECS.length; i++) if (SECS[i].getBoundingClientRect().top < innerHeight * 0.5) t = i; return t; }
-function pieceOnScreen(i) { const r = PIECES[i].getBoundingClientRect(); return r.top > 80 && r.bottom < innerHeight - 20; }
+function pieceOnScreen(i) { if (!PIECES[i]) return false; const r = PIECES[i].getBoundingClientRect(); return r.top > 80 && r.bottom < innerHeight - 20; }
 function openJobs(t) { // unbuilt parts of the section in view, on screen, that nobody is on yet (never the next section peeking in)
   const out = [];
   for (const el of SECS[t].querySelectorAll('.sb:not(.built)')) {
@@ -442,6 +443,20 @@ function reveal(i) { // reached by keyboard: finished at once
   if (PIECES[i] && !PIECES[i].classList.contains('held')) PIECES[i].classList.add('filled');
 }
 addEventListener('focusin', e => { const i = SECS.indexOf(e.target.closest && e.target.closest('main > section')); if (i > 0) reveal(i); });
+// soft snap: when you stop scrolling close to the next section start in the direction you were going, glide the
+// last bit. Never pulls back against you, never blocks a wheel notch (CSS snap did both).
+let lastY = scrollY, dir = 0, settleT = 0;
+if (!reduced) addEventListener('scroll', () => {
+  if (scrollY !== lastY) dir = Math.sign(scrollY - lastY);
+  lastY = scrollY; clearTimeout(settleT);
+  settleT = setTimeout(() => {
+    const near = innerHeight * 0.22;
+    for (const s of SECS) {
+      const d = s.getBoundingClientRect().top; // distance to this section start
+      if (Math.abs(d) > 2 && Math.abs(d) < near && Math.sign(d) === dir) { scrollBy({ top: d, behavior: 'smooth' }); break; }
+    }
+  }, 160);
+}, { passive: true });
 
 // the word, in voxels: drawn small on a canvas in the heading's own font, one block per lit pixel
 const WMAX = 1600, col = new THREE.Color();
@@ -517,17 +532,22 @@ function direct(t) {
     return;
   }
   if (state !== 'sec' || word.phase === 'in' || word.phase === 'out') return;
-  const jobs = t > 0 ? openJobs(t) : [];
+  const home = t === 0 && !CASE; // the hero: the crew belongs in the hat
+  const jobs = home ? [] : openJobs(t);
   if (word.phase === 'held') {
-    if (settled && (t === 0 || jobs.length || (t !== word.i && pieceOnScreen(t)))) morphOut();
+    if (settled && (home || jobs.length || (t !== word.i && pieceOnScreen(t)))) morphOut();
     return;
   }
-  if (t === 0) { if (settled) backToHat(); return; }
+  if (home) { if (settled) backToHat(); return; }
   team.forEach(m => { if ((m.mode === 'idle' || m.mode === 'toIdle') && jobs.length) takeJob(m, jobs); });
   if (!jobs.length && settled && pieceOnScreen(t) && team.every(m => m.mode === 'idle')) gather(t);
 }
 
-if (reduced) finishNow(); else if (root.classList.contains('intro')) intro(); else start();
+function startCase() { // the crew runs in from below the screen and gets to work
+  crew.slice(0, crewCount).forEach((m, k) => { standby(k, m.pos); m.pos.y -= 14; m.s = 1; toIdle(m, 0.2 + k * 0.06); });
+  state = 'sec';
+}
+if (reduced) finishNow(); else if (CASE) startCase(); else if (root.classList.contains('intro')) intro(); else start();
 if (!reduced) root.classList.add('crew'); // sections stay hidden until the crew builds them
 const skipBtn = document.querySelector('.skip-intro');
 if (skipBtn) skipBtn.addEventListener('click', finishNow);

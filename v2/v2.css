@@ -16,8 +16,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-snap-type: y mandatory; } /* each scroll lands on the next section; inside a section taller than the screen you scroll freely */
-main > section { scroll-snap-align: start; }
+html { scroll-behavior: smooth; } /* no CSS snap: it fought every wheel notch (Gray 2026-11-23); v2.js glides the last bit instead */
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.55 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
@@ -159,7 +158,7 @@ html.crew .piece.held { color: transparent; } /* the crew is the word right now,
 .clist a:hover { border-color: var(--accent); }
 .clist span { font: 500 .74rem var(--mono); color: var(--muted); }
 @media (min-width: 760px) { .clist { grid-template-columns: 1fr 1fr; } }
-.foot { scroll-snap-align: end; position: relative; z-index: 1; padding: 28px var(--pad); border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); text-align: center; }
+.foot { position: relative; z-index: 1; padding: 28px var(--pad); border-top: 1px solid var(--edge); font-size: .85rem; color: var(--muted); text-align: center; }
 
 /* until the crew gets there, a section's parts are hidden (html.crew is set by v2.js, never under reduced motion) */
 html.crew .sb:not(.built) { clip-path: inset(0 100% 0 0); }
@@ -176,3 +175,41 @@ html.intro .bld.built { animation: build .55s steps(7, end) both; }
 .skip-intro { display: none; }
 html.intro .skip-intro { display: inline-flex; align-items: center; position: fixed; right: var(--pad); bottom: 20px; z-index: 12; min-height: 44px; padding: 0 18px; border: 1px solid var(--edge); border-radius: 999px; background: var(--panel); color: var(--text); font: 500 .8rem var(--mono); cursor: pointer; }
 html.intro .skip-intro:hover { border-color: var(--accent); }
+
+/* ---------- case-study pages (body.case: no big figure, the crew runs in and builds each section) ---------- */
+.bar nav a[aria-current] { color: var(--text); }
+.sec h1 { margin: 0; max-width: 18ch; font-size: clamp(2.4rem, 5.4vw, 4.8rem); line-height: 1.03; letter-spacing: -0.04em; font-weight: 600; text-wrap: balance; }
+.pill-tag { display: inline-flex; margin: 24px 0 0; padding: 4px 12px; border: 1px solid rgba(63, 207, 142, .45); border-radius: 999px; font: 500 .76rem var(--mono); color: var(--accent); }
+.mono { font-family: var(--mono); font-size: .9em; }
+.meta div, .shots figure, .panels > div, .steps li, .decide li { background: rgba(21, 27, 24, .86); border: 1px solid var(--edge); border-radius: 12px; }
+.meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 44px 0 0; }
+.meta div { padding: 16px 18px; }
+.meta dt { font: 500 .74rem var(--mono); color: var(--muted); }
+.meta dd { margin: 6px 0 0; font-weight: 600; }
+@media (min-width: 900px) { .meta { grid-template-columns: repeat(4, 1fr); } }
+.shots { display: grid; gap: 14px; margin: 40px 0 0; align-items: start; }
+.shots figure { margin: 0; overflow: hidden; }
+.shots a { display: block; max-height: 360px; overflow: hidden; }
+.shots img { display: block; width: 100%; height: auto; transition: transform .4s ease; }
+.shots a:hover img { transform: scale(1.02); }
+.shots figcaption { padding: 12px 16px; border-top: 1px solid var(--edge); font-size: .86rem; color: var(--muted); }
+@media (min-width: 900px) { .shots { grid-template-columns: 1fr 1fr; } }
+.panels { display: grid; gap: 14px; margin: 14px 0 0; }
+.sec > .panels:nth-child(3) { margin-top: 44px; } /* straight after the heading */
+.panels > div { padding: 22px; }
+.panels ul { margin: 12px 0 0; padding-left: 18px; color: var(--text-2); font-size: .95rem; }
+.panels li + li { margin-top: 6px; }
+@media (min-width: 900px) { .panels { grid-template-columns: 1fr 1fr; } }
+.steps { display: grid; gap: 14px; margin: 40px 0 0; padding: 0; list-style: none; }
+.steps li { padding: 20px; color: var(--text-2); font-size: .93rem; }
+.steps li.on { border-color: rgba(63, 207, 142, .45); }
+.steps b { display: block; margin-bottom: 6px; color: var(--text); }
+@media (min-width: 900px) { .steps { grid-template-columns: repeat(5, 1fr); } }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
+.skills li { padding: 4px 12px; border: 1px solid var(--edge); border-radius: 999px; font: 500 .74rem var(--mono); color: var(--text-2); }
+.decide { display: grid; gap: 14px; margin: 40px 0 0; padding: 0; list-style: none; }
+.decide li { padding: 20px 22px; color: var(--text-2); font-size: .95rem; }
+.decide b { color: var(--text); }
+@media (min-width: 900px) { .decide { grid-template-columns: 1fr 1fr; } }
+.links { display: grid; gap: 4px; margin: 40px 0 0; padding: 0; list-style: none; }
+.links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-weight: 600; }
