@@ -6,7 +6,7 @@ import * as THREE from 'three';
 const canvas = document.getElementById('stage');
 const tipEl = document.querySelector('.tip');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const CASE = document.body.classList.contains('case'); // case-study pages: no big figure or hat, just the crew building
+const CASE = document.body.classList.contains('cs'); // case-study pages: no big figure or hat, just the crew building
 
 // ---------- colours (emerald is the only accent) ----------
 const C = {
@@ -768,4 +768,5 @@ function frame() {
   placeTip();
   renderer.render(scene, camera);
 }
-renderer.setAnimationLoop(frame);
+// compile the shaders off the main thread where the browser can, so the first frame doesn't freeze the page
+renderer.compileAsync(scene, camera).catch(() => {}).finally(() => renderer.setAnimationLoop(frame));

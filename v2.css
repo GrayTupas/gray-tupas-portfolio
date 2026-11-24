@@ -1,6 +1,6 @@
 /* v2 preview: dark 3D page, voxel crew builds each section (v2.js) */
-@font-face { font-family: 'Geist'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(../fonts/geist.woff2) format('woff2'); }
-@font-face { font-family: 'Geist Mono'; font-style: normal; font-weight: 400 500; font-display: swap; src: url(../fonts/geist-mono.woff2) format('woff2'); }
+@font-face { font-family: 'Geist'; font-style: normal; font-weight: 400 700; font-display: swap; src: url(fonts/geist.woff2) format('woff2'); }
+@font-face { font-family: 'Geist Mono'; font-style: normal; font-weight: 400 500; font-display: swap; src: url(fonts/geist-mono.woff2) format('woff2'); }
 
 :root {
   --bg: #0D110F;
@@ -176,7 +176,7 @@ html.intro .bld.built { animation: build .55s steps(7, end) both; }
 html.intro .skip-intro { display: inline-flex; align-items: center; position: fixed; right: var(--pad); bottom: 20px; z-index: 12; min-height: 44px; padding: 0 18px; border: 1px solid var(--edge); border-radius: 999px; background: var(--panel); color: var(--text); font: 500 .8rem var(--mono); cursor: pointer; }
 html.intro .skip-intro:hover { border-color: var(--accent); }
 
-/* ---------- case-study pages (body.case: no big figure, the crew runs in and builds each section) ---------- */
+/* ---------- case-study pages (body.cs: no big figure, the crew runs in and builds each section) ---------- */
 .bar nav a[aria-current] { color: var(--text); }
 .sec h1 { margin: 0; max-width: 18ch; font-size: clamp(2.4rem, 5.4vw, 4.8rem); line-height: 1.03; letter-spacing: -0.04em; font-weight: 600; text-wrap: balance; }
 .pill-tag { display: inline-flex; margin: 24px 0 0; padding: 4px 12px; border: 1px solid rgba(63, 207, 142, .45); border-radius: 999px; font: 500 .76rem var(--mono); color: var(--accent); }
