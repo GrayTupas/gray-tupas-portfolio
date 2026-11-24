@@ -3,6 +3,28 @@
 // they rebuild the hat. Hold the mouse to blast the figure apart; click the hat or a builder for a tip.
 import * as THREE from 'three';
 
+// screenshot viewer: image links open over the page instead of leaving the site. Close with the button, Esc or a
+// click outside the picture; Ctrl/middle-click still opens a new tab; without <dialog> the link just opens the image.
+if (window.HTMLDialogElement) {
+  const dlg = document.createElement('dialog');
+  dlg.className = 'viewer';
+  dlg.setAttribute('aria-label', 'Screenshot');
+  dlg.innerHTML = '<button class="viewer-close" type="button">Close</button><figure><img alt=""><figcaption></figcaption></figure>';
+  document.body.appendChild(dlg);
+  const img = dlg.querySelector('img'), cap = dlg.querySelector('figcaption');
+  document.querySelectorAll('a[href$=".webp"]').forEach(a => a.addEventListener('click', e => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    const t = a.querySelector('b') || a.closest('article, figure')?.querySelector('h3, figcaption');
+    img.src = a.getAttribute('href');
+    img.alt = a.querySelector('img')?.alt || '';
+    cap.textContent = t ? t.textContent : '';
+    dlg.showModal();
+  }));
+  dlg.addEventListener('click', e => { if (e.target !== img) dlg.close(); });
+  dlg.addEventListener('close', () => img.removeAttribute('src'));
+}
+
 const canvas = document.getElementById('stage');
 const tipEl = document.querySelector('.tip');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -443,29 +465,6 @@ function reveal(i) { // reached by keyboard: finished at once
   if (PIECES[i] && !PIECES[i].classList.contains('held')) PIECES[i].classList.add('filled');
 }
 addEventListener('focusin', e => { const i = SECS.indexOf(e.target.closest && e.target.closest('main > section')); if (i > 0) reveal(i); });
-// snap, medium strength: when you stop scrolling, the page settles on a section start (or a tall section's end).
-// Go 30% of the way and it carries on to the next one; less and it eases back, so one wheel notch never flips a
-// page (CSS snap did, Gray 2026-11-23). Inside a section taller than the screen you scroll freely.
-let lastY = scrollY, dir = 0, settleT = 0;
-function settle() {
-  const y = scrollY, stops = [], free = [];
-  for (const s of SECS) {
-    const top = Math.round(s.getBoundingClientRect().top + y), end = top + s.offsetHeight - innerHeight;
-    stops.push(top);
-    if (end > top + 2) { stops.push(end); free.push([top, end]); }
-  }
-  stops.push(document.documentElement.scrollHeight - innerHeight); // footer
-  stops.sort((a, b) => a - b);
-  let a = stops[0], b = stops[stops.length - 1];
-  for (const v of stops) { if (v <= y) a = v; else { b = v; break; } }
-  if (b <= a || y <= a + 1 || free.some(([t, e]) => a >= t && b <= e)) return;
-  const p = (y - a) / (b - a), to = dir > 0 ? (p >= 0.3 ? b : a) : (p <= 0.7 ? a : b);
-  scrollTo({ top: to, behavior: 'smooth' });
-}
-if (!reduced) addEventListener('scroll', () => {
-  if (scrollY !== lastY) dir = Math.sign(scrollY - lastY);
-  lastY = scrollY; clearTimeout(settleT); settleT = setTimeout(settle, 180);
-}, { passive: true });
 
 // the word, in voxels: drawn small on a canvas in the heading's own font, one block per lit pixel
 const WMAX = 1600, col = new THREE.Color();

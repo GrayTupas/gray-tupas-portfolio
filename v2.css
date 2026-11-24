@@ -16,7 +16,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; } /* no CSS snap: it flipped a page on every wheel notch (Gray 2026-11-23); v2.js settles on sections instead */
+html { scroll-behavior: smooth; } /* no snap: natural scrolling reads best on wheels, trackpads and phones (2026-11-24) */
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.55 'Geist', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
@@ -213,3 +213,16 @@ html.intro .skip-intro:hover { border-color: var(--accent); }
 @media (min-width: 900px) { .decide { grid-template-columns: 1fr 1fr; } }
 .links { display: grid; gap: 4px; margin: 40px 0 0; padding: 0; list-style: none; }
 .links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--accent); font-weight: 600; }
+
+/* ---------- screenshot viewer (v2.js, native <dialog>) ---------- */
+.viewer { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 72px clamp(12px, 3vw, 40px) 24px; border: 0; background: #090C0A; color: var(--text); cursor: zoom-out; }
+.viewer[open] { display: grid; place-items: center; animation: v-in .25s ease; }
+.viewer::backdrop { background: transparent; }
+.viewer figure { margin: 0; display: grid; gap: 12px; justify-items: center; max-width: 100%; }
+.viewer img { width: auto; max-width: 100%; max-height: calc(100dvh - 150px); object-fit: contain; border: 1px solid var(--edge); border-radius: 12px; background: #111; cursor: default; }
+.viewer figcaption { font: .82rem var(--mono); color: var(--muted); text-align: center; }
+.viewer-close { position: fixed; top: 14px; right: 14px; min-height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--edge); color: var(--text); font-family: inherit; font-size: .9rem; font-weight: 600; cursor: pointer; }
+.viewer-close:hover, .viewer-close:focus-visible { box-shadow: inset 0 0 0 1px var(--accent); }
+html:has(.viewer[open]) { overflow: hidden; }
+@keyframes v-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .viewer[open] { animation: none; } }
