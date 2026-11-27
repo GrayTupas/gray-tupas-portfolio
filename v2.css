@@ -9,7 +9,8 @@
   --text: #E6ECE8;
   --text-2: #A7B4AC;
   --muted: #8C9A92;
-  --accent: #3FCF8E;
+  --accent: #3FCF8E; /* buttons, links, labels, live status */
+  --accent-2: #F5B841; /* safety amber: the crew's hats and the missing words they build (10.5:1 on bg) */
   --ink: #0D110F;
   --mono: 'Geist Mono', ui-monospace, monospace;
   --pad: clamp(16px, 3vw, 40px);
@@ -89,7 +90,7 @@ main, .bar { position: relative; z-index: 1; }
 .fixes li, .stats div, .case, .builds a, .xp li, .promise li, .clist a, .clist p { background: rgba(21, 27, 24, .86); border: 1px solid var(--edge); border-radius: 12px; }
 
 /* the missing word each section waits for: the crew jumps in and becomes it */
-.piece { display: inline-block; color: var(--accent); border-radius: 10px; }
+.piece { display: inline-block; color: var(--accent-2); border-radius: 10px; }
 html.crew .piece:not(.filled):not(.held) { color: transparent; outline: 2px dashed var(--edge); outline-offset: 2px; }
 html.crew .piece.held { color: transparent; } /* the crew is the word right now, drawn in 3D behind the text */
 

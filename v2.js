@@ -30,11 +30,11 @@ const tipEl = document.querySelector('.tip');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const CASE = document.body.classList.contains('cs'); // case-study pages: no big figure or hat, just the crew building
 
-// ---------- colours (emerald is the only accent) ----------
+// ---------- colours (emerald for anything you can click; safety amber for the crew's hats and the words they build) ----------
 const C = {
   skin: '#C68B61', skinD: '#AE7550', hair: '#17120F', shirt: '#D9DED9', vest: '#26352D', strip: '#3FCF8E',
   belt: '#7A5230', pouch: '#664326', buckle: '#C9B27A', denim: '#33445F', shoe: '#1B1E1D', glove: '#C59F62',
-  eye: '#1A1412', teeth: '#F3F0E8', mouth: '#8E4A3C', button: '#2A2F2C', hat: '#3FCF8E', hatD: '#2FA873',
+  eye: '#1A1412', teeth: '#F3F0E8', mouth: '#8E4A3C', button: '#2A2F2C', hat: '#F5B841', hatD: '#D4961F',
 };
 
 function rng(seed) { // small seeded random, so the curls are the same on every visit
@@ -146,7 +146,7 @@ function instanced(list, mat) {
   return mesh;
 }
 const bodyMesh = instanced(body, new THREE.MeshStandardMaterial({ roughness: 0.75 }));
-const hatMesh = instanced(hat, new THREE.MeshStandardMaterial({ roughness: 0.45, emissive: '#3FCF8E', emissiveIntensity: 0.28 }));
+const hatMesh = instanced(hat, new THREE.MeshStandardMaterial({ roughness: 0.45, emissive: '#F5B841', emissiveIntensity: 0.28 }));
 fig.add(bodyMesh, hatMesh);
 
 // the crate the crew starts in (intro only); a small emerald stamp on the front
